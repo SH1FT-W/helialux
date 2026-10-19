@@ -1,0 +1,54 @@
+set_channels:
+  target:
+    entity:
+      integration: juwel_helialux
+      domain: light
+  fields:
+    white:
+      selector:
+        number: {min: 0, max: 100, step: 1, unit_of_measurement: "%", mode: slider}
+    blue:
+      selector:
+        number: {min: 0, max: 100, step: 1, unit_of_measurement: "%", mode: slider}
+    green:
+      selector:
+        number: {min: 0, max: 100, step: 1, unit_of_measurement: "%", mode: slider}
+    red:
+      selector:
+        number: {min: 0, max: 100, step: 1, unit_of_measurement: "%", mode: slider}
+    transition:
+      selector:
+        number: {min: 0, max: 21600, step: 1, unit_of_measurement: s, mode: box}
+
+get_profile:
+  target:
+    entity:
+      integration: juwel_helialux
+      domain: light
+  fields:
+    profile:
+      example: My_Profile
+      selector:
+        text:
+
+set_profile:
+  target:
+    entity:
+      integration: juwel_helialux
+      domain: light
+  fields:
+    profile:
+      example: My_Profile
+      selector:
+        text:
+    name:
+      example: My_Profile
+      selector:
+        text:
+    points:
+      required: true
+      example: >-
+        [{"time": "09:00", "white": 0, "blue": 0, "green": 0, "red": 0},
+        {"time": "10:00", "white": 100, "blue": 60, "green": 55, "red": 80, "clouds": 2, "cloud_motion": 2}]
+      selector:
+        object:

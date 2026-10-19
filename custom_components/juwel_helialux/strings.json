@@ -1,0 +1,276 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Juwel HeliaLux",
+        "description": "IP address of the HeliaLux SmartControl. The name determines the entity IDs.",
+        "data": {
+          "tank_host": "IP address",
+          "tank_name": "Aquarium name",
+          "tank_protocol": "Protocol"
+        }
+      },
+      "reconfigure": {
+        "title": "Change address",
+        "data": {
+          "tank_host": "IP address",
+          "tank_protocol": "Protocol"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The lamp does not respond. Check the address and Wi-Fi."
+    },
+    "abort": {
+      "already_configured": "This lamp is already set up.",
+      "reconfigure_successful": "Address changed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Settings",
+        "data": {
+          "scan_interval": "Poll every … seconds",
+          "weather_entity": "Weather for clouds from weather"
+        },
+        "data_description": {
+          "scan_interval": "How often Home Assistant reads the lamp state (default 15).",
+          "weather_entity": "Weather condition sets cloud strength, wind sets cloud motion. Written only on change and at most every 30 minutes."
+        }
+      }
+    }
+  },
+  "entity": {
+    "light": {
+      "light_name": {
+        "name": "Light",
+        "state_attributes": {
+          "manual": {
+            "name": "Manual"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "white": {
+        "name": "White intensity"
+      },
+      "blue": {
+        "name": "Blue intensity"
+      },
+      "green": {
+        "name": "Green intensity"
+      },
+      "red": {
+        "name": "Red intensity"
+      },
+      "current_profile": {
+        "name": "Current profile"
+      },
+      "device_time": {
+        "name": "Device time"
+      },
+      "profiles": {
+        "name": "Available profiles"
+      },
+      "clock_offset": {
+        "name": "Clock offset"
+      },
+      "color_simulation_remaining": {
+        "name": "Color simulation remaining"
+      }
+    },
+    "binary_sensor": {
+      "reachable": {
+        "name": "Reachable"
+      }
+    },
+    "number": {
+      "manual_color_simulation_duration": {
+        "name": "Manual color simulation duration"
+      },
+      "manual_daytime_simulation_duration": {
+        "name": "Daytime simulation duration"
+      },
+      "daytime_simulation_position": {
+        "name": "Daytime simulation start"
+      },
+      "white_level": {
+        "name": "White"
+      },
+      "blue_level": {
+        "name": "Blue"
+      },
+      "green_level": {
+        "name": "Green"
+      },
+      "red_level": {
+        "name": "Red"
+      },
+      "acclim_start": {
+        "name": "Acclimatization start brightness"
+      },
+      "acclim_weeks": {
+        "name": "Acclimatization duration"
+      }
+    },
+    "switch": {
+      "manual_color_simulation": {
+        "name": "Manual color simulation"
+      },
+      "manual_daytime_simulation": {
+        "name": "Manual daytime simulation"
+      },
+      "keep_manual": {
+        "name": "Keep manual color"
+      },
+      "sun_cycle": {
+        "name": "Sun cycle"
+      },
+      "acclimatization": {
+        "name": "Acclimatization"
+      },
+      "weather_clouds": {
+        "name": "Clouds from weather"
+      }
+    },
+    "select": {
+      "profile": {
+        "name": "Profile"
+      },
+      "profile_monday": {
+        "name": "Profile Monday"
+      },
+      "profile_tuesday": {
+        "name": "Profile Tuesday"
+      },
+      "profile_wednesday": {
+        "name": "Profile Wednesday"
+      },
+      "profile_thursday": {
+        "name": "Profile Thursday"
+      },
+      "profile_friday": {
+        "name": "Profile Friday"
+      },
+      "profile_saturday": {
+        "name": "Profile Saturday"
+      },
+      "profile_sunday": {
+        "name": "Profile Sunday"
+      },
+      "cloud_intensity": {
+        "name": "Clouds",
+        "state": {
+          "off": "Off",
+          "light": "Light",
+          "medium": "Medium",
+          "strong": "Strong"
+        }
+      },
+      "cloud_motion": {
+        "name": "Cloud motion",
+        "state": {
+          "off": "Off",
+          "slow": "Slow",
+          "medium": "Medium",
+          "fast": "Fast"
+        }
+      }
+    },
+    "time": {
+      "cloud_from": {
+        "name": "Clouds from"
+      },
+      "cloud_to": {
+        "name": "Clouds until"
+      },
+      "sun_earliest": {
+        "name": "Sun cycle earliest on"
+      },
+      "sun_latest": {
+        "name": "Sun cycle latest off"
+      }
+    }
+  },
+  "exceptions": {
+    "unreachable": {
+      "message": "Lamp unreachable: {error}"
+    },
+    "command_failed": {
+      "message": "The lamp did not accept the command: {error}"
+    },
+    "no_profiles": {
+      "message": "The lamp profiles are not loaded yet."
+    },
+    "unknown_profile": {
+      "message": "The lamp has no profile “{profile}”."
+    },
+    "bad_points": {
+      "message": "Invalid points: each time only once, at most {max} points including 00:00 and 23:59."
+    }
+  },
+  "issues": {
+    "clock_drift": {
+      "title": "{name} clock is wrong",
+      "description": "The lamp clock is off by {minutes} minutes (positive = ahead). This does not matter while Home Assistant controls the color, but the lamp's own profile will run at the wrong time.\n\nThe lamp syncs via NTP (ptbtime1.ptb.de); a firewall blocking UDP 123 is the usual cause. This notice disappears once the offset is below 5 minutes."
+    }
+  },
+  "services": {
+    "set_channels": {
+      "name": "Set channels",
+      "description": "Sets white, blue, green and red directly in percent. Channels not given stay as they are.",
+      "fields": {
+        "white": {
+          "name": "White",
+          "description": "White in %"
+        },
+        "blue": {
+          "name": "Blue",
+          "description": "Blue in %"
+        },
+        "green": {
+          "name": "Green",
+          "description": "Green in %"
+        },
+        "red": {
+          "name": "Red",
+          "description": "Red in %"
+        },
+        "transition": {
+          "name": "Transition",
+          "description": "Transition time in seconds"
+        }
+      }
+    },
+    "get_profile": {
+      "name": "Get profile",
+      "description": "Returns a lamp profile with all points, in the format of Set profile.",
+      "fields": {
+        "profile": {
+          "name": "Profile",
+          "description": "Name or slot (e.g. My_Profile or P8). Empty: today's active profile."
+        }
+      }
+    },
+    "set_profile": {
+      "name": "Set profile",
+      "description": "Replaces all points of a profile. The lamp fades between points itself. If 00:00 or 23:59 is missing, the last point is continued there.",
+      "fields": {
+        "profile": {
+          "name": "Profile",
+          "description": "Name or slot (e.g. My_Profile or P8). Empty: today's active profile."
+        },
+        "name": {
+          "name": "New name",
+          "description": "Optional, at most 16 characters."
+        },
+        "points": {
+          "name": "Points",
+          "description": "List of time (HH:MM), white, blue, green, red (0–100 %), optional clouds and cloud_motion (0–3). At most 16 points. Without cloud values the profile keeps its current cloud setting."
+        }
+      }
+    }
+  }
+}

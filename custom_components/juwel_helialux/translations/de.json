@@ -1,0 +1,276 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Juwel HeliaLux einrichten",
+        "description": "IP-Adresse der HeliaLux SmartControl im WLAN. Der Name bestimmt die Entity-IDs.",
+        "data": {
+          "tank_host": "IP-Adresse",
+          "tank_name": "Name des Aquariums",
+          "tank_protocol": "Protokoll"
+        }
+      },
+      "reconfigure": {
+        "title": "Adresse ändern",
+        "data": {
+          "tank_host": "IP-Adresse",
+          "tank_protocol": "Protokoll"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Die Lampe antwortet nicht. Stimmt die Adresse, ist sie im WLAN?"
+    },
+    "abort": {
+      "already_configured": "Diese Lampe ist schon eingerichtet.",
+      "reconfigure_successful": "Adresse geändert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen",
+        "data": {
+          "scan_interval": "Abfrage alle … Sekunden",
+          "weather_entity": "Wetter für „Wolken nach Wetter“"
+        },
+        "data_description": {
+          "scan_interval": "Wie oft Home Assistant den Zustand der Lampe liest (Standard 15).",
+          "weather_entity": "Wetterzustand bestimmt die Wolkenstärke, Wind den Wolkenzug. Geschrieben wird nur bei Änderung und höchstens alle 30 Minuten."
+        }
+      }
+    }
+  },
+  "entity": {
+    "light": {
+      "light_name": {
+        "name": "Licht",
+        "state_attributes": {
+          "manual": {
+            "name": "Manuell"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "white": {
+        "name": "Weiße Lichtintensität"
+      },
+      "blue": {
+        "name": "Blaue Lichtintensität"
+      },
+      "green": {
+        "name": "Grüne Lichtintensität"
+      },
+      "red": {
+        "name": "Rote Lichtintensität"
+      },
+      "current_profile": {
+        "name": "Aktuelles Beleuchtungsprofil"
+      },
+      "device_time": {
+        "name": "Gerätezeit"
+      },
+      "profiles": {
+        "name": "Verfügbare Profile"
+      },
+      "clock_offset": {
+        "name": "Uhrabweichung"
+      },
+      "color_simulation_remaining": {
+        "name": "Restzeit Farbsimulation"
+      }
+    },
+    "binary_sensor": {
+      "reachable": {
+        "name": "Erreichbar"
+      }
+    },
+    "number": {
+      "manual_color_simulation_duration": {
+        "name": "Dauer manuelle Farbsimulation"
+      },
+      "manual_daytime_simulation_duration": {
+        "name": "Dauer Tagsimulation"
+      },
+      "daytime_simulation_position": {
+        "name": "Startzeit Tagsimulation"
+      },
+      "white_level": {
+        "name": "Weiß"
+      },
+      "blue_level": {
+        "name": "Blau"
+      },
+      "green_level": {
+        "name": "Grün"
+      },
+      "red_level": {
+        "name": "Rot"
+      },
+      "acclim_start": {
+        "name": "Eingewöhnung Start-Helligkeit"
+      },
+      "acclim_weeks": {
+        "name": "Eingewöhnung Dauer"
+      }
+    },
+    "switch": {
+      "manual_color_simulation": {
+        "name": "Manuelle Farbsimulation"
+      },
+      "manual_daytime_simulation": {
+        "name": "Manuelle Tagsimulation"
+      },
+      "keep_manual": {
+        "name": "Manuelle Farbe halten"
+      },
+      "sun_cycle": {
+        "name": "Sonnenverlauf"
+      },
+      "acclimatization": {
+        "name": "Eingewöhnung"
+      },
+      "weather_clouds": {
+        "name": "Wolken nach Wetter"
+      }
+    },
+    "select": {
+      "profile": {
+        "name": "Profil"
+      },
+      "profile_monday": {
+        "name": "Profil Montag"
+      },
+      "profile_tuesday": {
+        "name": "Profil Dienstag"
+      },
+      "profile_wednesday": {
+        "name": "Profil Mittwoch"
+      },
+      "profile_thursday": {
+        "name": "Profil Donnerstag"
+      },
+      "profile_friday": {
+        "name": "Profil Freitag"
+      },
+      "profile_saturday": {
+        "name": "Profil Samstag"
+      },
+      "profile_sunday": {
+        "name": "Profil Sonntag"
+      },
+      "cloud_intensity": {
+        "name": "Wolken",
+        "state": {
+          "off": "Aus",
+          "light": "Leicht",
+          "medium": "Mittel",
+          "strong": "Stark"
+        }
+      },
+      "cloud_motion": {
+        "name": "Wolkenzug",
+        "state": {
+          "off": "Aus",
+          "slow": "Langsam",
+          "medium": "Mittel",
+          "fast": "Schnell"
+        }
+      }
+    },
+    "time": {
+      "cloud_from": {
+        "name": "Wolken von"
+      },
+      "cloud_to": {
+        "name": "Wolken bis"
+      },
+      "sun_earliest": {
+        "name": "Sonnenverlauf frühestens hell"
+      },
+      "sun_latest": {
+        "name": "Sonnenverlauf spätestens dunkel"
+      }
+    }
+  },
+  "exceptions": {
+    "unreachable": {
+      "message": "Lampe nicht erreichbar: {error}"
+    },
+    "command_failed": {
+      "message": "Die Lampe hat den Befehl nicht angenommen: {error}"
+    },
+    "no_profiles": {
+      "message": "Die Profile der Lampe sind noch nicht geladen."
+    },
+    "unknown_profile": {
+      "message": "Profil „{profile}“ gibt es in der Lampe nicht."
+    },
+    "bad_points": {
+      "message": "Ungültige Stützpunkte: jede Uhrzeit nur einmal, zusammen mit 00:00 und 23:59 höchstens {max} Punkte."
+    }
+  },
+  "issues": {
+    "clock_drift": {
+      "title": "Uhr von {name} geht falsch",
+      "description": "Die Uhr der Lampe weicht um {minutes} Minuten ab (positiv = geht vor). Solange Home Assistant die Farbe steuert, ist das egal. Läuft aber das Profil der Lampe, dann laufen Sonnenauf- und -untergang zur falschen Zeit.\n\nDie Lampe stellt ihre Uhr per NTP (ptbtime1.ptb.de). Wahrscheinlich blockiert die Firewall NTP (UDP 123) aus dem Netz der Lampe. Sobald die Abweichung unter 5 Minuten liegt, verschwindet dieser Hinweis von selbst."
+    }
+  },
+  "services": {
+    "set_channels": {
+      "name": "Kanäle setzen",
+      "description": "Setzt Weiß, Blau, Grün und Rot direkt in Prozent. Nicht angegebene Kanäle bleiben, wie sie sind.",
+      "fields": {
+        "white": {
+          "name": "Weiß",
+          "description": "Weiß in %"
+        },
+        "blue": {
+          "name": "Blau",
+          "description": "Blau in %"
+        },
+        "green": {
+          "name": "Grün",
+          "description": "Grün in %"
+        },
+        "red": {
+          "name": "Rot",
+          "description": "Rot in %"
+        },
+        "transition": {
+          "name": "Übergang",
+          "description": "Dauer des Übergangs in Sekunden"
+        }
+      }
+    },
+    "get_profile": {
+      "name": "Profil lesen",
+      "description": "Gibt ein Profil der Lampe mit allen Stützpunkten zurück – im Format von „Profil setzen“.",
+      "fields": {
+        "profile": {
+          "name": "Profil",
+          "description": "Name oder Platz (z. B. My_Profile oder P8). Leer: das heute aktive Profil."
+        }
+      }
+    },
+    "set_profile": {
+      "name": "Profil setzen",
+      "description": "Setzt alle Stützpunkte eines Profils neu. Die Lampe blendet zwischen den Punkten selbst über. Fehlt 00:00 oder 23:59, wird der letzte Punkt dorthin fortgesetzt.",
+      "fields": {
+        "profile": {
+          "name": "Profil",
+          "description": "Name oder Platz (z. B. My_Profile oder P8). Leer: das heute aktive Profil."
+        },
+        "name": {
+          "name": "Neuer Name",
+          "description": "Optional, höchstens 16 Zeichen."
+        },
+        "points": {
+          "name": "Stützpunkte",
+          "description": "Liste mit time (HH:MM), white, blue, green, red (0–100 %), optional clouds und cloud_motion (0–3). Höchstens 16 Punkte. Ohne Wolkenangaben bleibt die bisherige Wolken-Einstellung des Profils."
+        }
+      }
+    }
+  }
+}

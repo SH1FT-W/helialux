@@ -1,0 +1,203 @@
+{
+  "$comment": "Content of the README pictures. Cards: node sh1ft-w.github.io/theme/v1/readme-images/render.mjs <this repo> cards. The title image is NOT rendered from here: it comes from docs/readme-title.html (rendered photo, borderless, see the comment there). The rendered photo docs/images/stage-photo.jpg is an AI-generated image, free to use.",
+  "title": {
+    "name": "HeliaLux",
+    "eyebrow": "For Home Assistant",
+    "lead": "Your aquarium light, <em>fully local.</em>",
+    "sub": "The Juwel HeliaLux SmartControl in Home Assistant: every channel as a slider, real transitions, profiles, clouds and a sun cycle. It holds the colour you set. No cloud.",
+    "pills": [
+      [
+        "Local, no cloud"
+      ],
+      [
+        "Silver",
+        "v"
+      ],
+      [
+        "HACS"
+      ]
+    ],
+    "logo": "docs/images/readme-icon.png",
+    "shot": {
+      "light": "docs/images/stage-photo.jpg",
+      "dark": "docs/images/stage-photo.jpg",
+      "srcW": 1188,
+      "winW": 1188,
+      "s": 0.64,
+      "strips": [
+        [
+          0,
+          1000
+        ]
+      ],
+      "bar": null,
+      "left": 560,
+      "top": 0,
+      "flat": true
+    }
+  },
+  "colors": {
+    "light": {
+      "bg": "#F3F7FA",
+      "bg2": "#E8EFF4",
+      "ink": "#0C1922",
+      "ink2": "#485865",
+      "ink3": "#7D8B95",
+      "accentText": "#00507F",
+      "accent": "#003A5D",
+      "accent2": "#1C9BD6",
+      "glow1": "rgba(28,155,214,0.16)",
+      "glow2": "rgba(0,58,93,0.12)",
+      "frame": "rgba(5,30,50,0.10)",
+      "pillBg": "#ffffff",
+      "pillLine": "rgba(5,30,50,0.08)",
+      "win": "#04111a",
+      "bar": ""
+    },
+    "dark": {
+      "bg": "#06111A",
+      "bg2": "#0A1822",
+      "ink": "#EAF2F7",
+      "ink2": "rgba(214,228,238,0.84)",
+      "ink3": "rgba(214,228,238,0.52)",
+      "accentText": "#7CC8EE",
+      "accent": "#5DB9E8",
+      "accent2": "#1C9BD6",
+      "glow1": "rgba(93,185,232,0.20)",
+      "glow2": "rgba(0,90,140,0.16)",
+      "frame": "rgba(255,255,255,0.10)",
+      "pillBg": "rgba(255,255,255,0.06)",
+      "pillLine": "rgba(255,255,255,0.10)",
+      "win": "#04111a",
+      "bar": ""
+    }
+  },
+  "fonts": {
+    "display": "\"Archivo\", -apple-system, system-ui, sans-serif",
+    "body": "\"Inter\", -apple-system, system-ui, sans-serif",
+    "mono": "\"JetBrains Mono\", ui-monospace, Menlo, monospace",
+    "google": "https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+  },
+  "cards": {
+    "new": [
+      {
+        "icon": "chart-bell-curve",
+        "title": "True to the profile",
+        "ver": "26.10.2",
+        "text": "Before the first point of a profile the value of that point applies, exactly as on the lamp, instead of a wrongly extrapolated one."
+      },
+      {
+        "icon": "form-textbox-lock",
+        "title": "Safe profile names",
+        "ver": "26.10.2",
+        "text": "Names with characters the lamp cannot store are rejected before saving, so a profile on the lamp is never mangled."
+      },
+      {
+        "icon": "weather-windy",
+        "title": "Wind in any unit",
+        "ver": "26.10.2",
+        "text": "Clouds from weather convert knots and feet per second correctly. Holding the state starts only once, even for two quick polls."
+      },
+      {
+        "icon": "calendar-outline",
+        "title": "Calendar versions",
+        "ver": "26.10.1",
+        "text": "Year, month and the release of that month: 26.10.2 is the second release of October 2026. The jump from 1.0.1 is intended, updates show up as usual."
+      }
+    ],
+    "features": [
+      {
+        "icon": "tune-vertical",
+        "title": "Every channel a slider",
+        "text": "White, blue, green and red from 0 to 100 %, right on the device page, plus the service set_channels."
+      },
+      {
+        "icon": "lightbulb-on-outline",
+        "title": "An RGBW light with transitions",
+        "text": "Brightness keeps the mix, transition fades in gentle steps, switching on brings back the last mix instead of 100 % white."
+      },
+      {
+        "icon": "shield-check-outline",
+        "title": "Holds what you set",
+        "text": "After a power cut or lamp restart the colour comes back by itself, the manual colour simulation is extended before it runs out."
+      },
+      {
+        "icon": "cellphone",
+        "title": "No fight with the app",
+        "text": "Changes in the Juwel app are taken over. Start the daytime simulation and Home Assistant steps back."
+      },
+      {
+        "icon": "calendar-week",
+        "title": "Profiles and weekly plan",
+        "text": "Read and write whole profiles with get_profile and set_profile, one profile for all days or one per weekday."
+      },
+      {
+        "icon": "weather-partly-cloudy",
+        "title": "Clouds, sun and weather",
+        "text": "Cloud strength and motion, a cloud window, clouds from a weather entity and a sun cycle that follows sunrise and sunset."
+      },
+      {
+        "icon": "sprout-outline",
+        "title": "Acclimatization",
+        "text": "A new tank starts dimmed (10 to 100 %) and reaches full brightness after 1 to 12 weeks."
+      },
+      {
+        "icon": "stethoscope",
+        "title": "Robust, with diagnostics",
+        "text": "One request at a time, lost commands repeated, unavailable only after three misses. Clock offset repair issue and a diagnostics download."
+      }
+    ],
+    "entities": [
+      {
+        "icon": "lightbulb-outline",
+        "title": "Light",
+        "text": "light.trigon_190_light: RGBW with absolute channel values (0 to 255 = 0 to 100 %), brightness and transition."
+      },
+      {
+        "icon": "tune-variant",
+        "title": "Channel numbers",
+        "text": "white, blue, green and red from 0 to 100 %, plus the durations of the colour and daytime simulation."
+      },
+      {
+        "icon": "toggle-switch-outline",
+        "title": "Switches",
+        "text": "manual_color_simulation, manual_daytime_simulation, keep_manual, sun_cycle, acclimatization and weather_clouds."
+      },
+      {
+        "icon": "form-dropdown",
+        "title": "Selects and times",
+        "text": "profil, profile_monday to _sunday, cloud_intensity and cloud_motion. cloud_from, cloud_to, sun_earliest and sun_latest."
+      },
+      {
+        "icon": "information-outline",
+        "title": "Sensors",
+        "text": "Channel values in %, current_profile with the attributes curve, profile_now and week, device_time and profiles."
+      },
+      {
+        "icon": "stethoscope",
+        "title": "Diagnostics",
+        "text": "reachable with the last error, clock_offset and color_simulation_remaining."
+      }
+    ],
+    "how": {
+      "cols": 3,
+      "items": [
+        {
+          "icon": "download-network-outline",
+          "title": "statusvars.js",
+          "text": "Channels, mode and the lamp clock, every 15 seconds over the lamp's own web server."
+        },
+        {
+          "icon": "palette-outline",
+          "title": "POST /stat",
+          "text": "Channels, colour and daytime simulation, one request after the other."
+        },
+        {
+          "icon": "calendar-edit",
+          "title": "/pedit and /week.html",
+          "text": "Profile points, clouds and the weekly plan, saved permanently in the lamp."
+        }
+      ]
+    }
+  }
+}

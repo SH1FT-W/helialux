@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in Juwel HeliaLux does not work as described.
+labels: ["bug"]
+body:
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.10.1"
+    validations:
+      required: true
+  - type: input
+    id: helialux_version
+    attributes:
+      label: Juwel HeliaLux version
+      description: Settings > Devices & services > Juwel HeliaLux, or HACS.
+      placeholder: "26.10.2"
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Lamp, controller firmware and channels
+      description: For example HeliaLux SmartControl 4Ch, firmware 2.2.2, hardware 1.1C. Firmware and hardware are shown on the device page in Home Assistant.
+      placeholder: "SmartControl 4Ch, 2.2.2, 1.1C"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happens instead
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Settings > Devices & services > Juwel HeliaLux > three dots > Download diagnostics. The file contains no IP address or MAC address. Drag it here.
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Debug log lines (logger custom_components.juwel_helialux set to debug), whether the Juwel app or the lamp's web interface was open, whether the lamp has internet access for its clock.

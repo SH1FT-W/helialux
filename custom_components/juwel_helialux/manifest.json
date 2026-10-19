@@ -1,0 +1,13 @@
+{
+  "domain": "juwel_helialux",
+  "name": "Juwel HeliaLux",
+  "codeowners": ["@SH1FT-W"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/SH1FT-W/helialux",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/SH1FT-W/helialux/issues",
+  "requirements": [],
+  "version": "26.10.2"
+}

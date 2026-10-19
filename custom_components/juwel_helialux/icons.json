@@ -1,0 +1,139 @@
+{
+  "entity": {
+    "sensor": {
+      "white": {
+        "default": "mdi:brightness-percent"
+      },
+      "blue": {
+        "default": "mdi:brightness-percent"
+      },
+      "green": {
+        "default": "mdi:brightness-percent"
+      },
+      "red": {
+        "default": "mdi:brightness-percent"
+      },
+      "current_profile": {
+        "default": "mdi:format-list-bulleted"
+      },
+      "device_time": {
+        "default": "mdi:clock-time-five"
+      },
+      "profiles": {
+        "default": "mdi:format-list-numbered"
+      },
+      "clock_offset": {
+        "default": "mdi:clock-alert-outline"
+      },
+      "color_simulation_remaining": {
+        "default": "mdi:timer-sand"
+      }
+    },
+    "switch": {
+      "manual_color_simulation": {
+        "default": "mdi:palette"
+      },
+      "manual_daytime_simulation": {
+        "default": "mdi:sun-clock"
+      },
+      "keep_manual": {
+        "default": "mdi:pin"
+      },
+      "sun_cycle": {
+        "default": "mdi:weather-sunset"
+      },
+      "acclimatization": {
+        "default": "mdi:chart-line-variant"
+      },
+      "weather_clouds": {
+        "default": "mdi:weather-partly-cloudy"
+      }
+    },
+    "number": {
+      "manual_color_simulation_duration": {
+        "default": "mdi:palette"
+      },
+      "manual_daytime_simulation_duration": {
+        "default": "mdi:sun-clock"
+      },
+      "daytime_simulation_position": {
+        "default": "mdi:clock-time-five"
+      },
+      "white_level": {
+        "default": "mdi:brightness-7"
+      },
+      "blue_level": {
+        "default": "mdi:water"
+      },
+      "green_level": {
+        "default": "mdi:leaf"
+      },
+      "red_level": {
+        "default": "mdi:fire"
+      },
+      "acclim_start": {
+        "default": "mdi:brightness-5"
+      },
+      "acclim_weeks": {
+        "default": "mdi:calendar-range"
+      }
+    },
+    "select": {
+      "profile": {
+        "default": "mdi:format-list-bulleted"
+      },
+      "profile_monday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_tuesday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_wednesday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_thursday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_friday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_saturday": {
+        "default": "mdi:calendar-week"
+      },
+      "profile_sunday": {
+        "default": "mdi:calendar-week"
+      },
+      "cloud_intensity": {
+        "default": "mdi:weather-cloudy"
+      },
+      "cloud_motion": {
+        "default": "mdi:weather-windy"
+      }
+    },
+    "time": {
+      "cloud_from": {
+        "default": "mdi:weather-cloudy-clock"
+      },
+      "cloud_to": {
+        "default": "mdi:weather-cloudy-clock"
+      },
+      "sun_earliest": {
+        "default": "mdi:weather-sunset-up"
+      },
+      "sun_latest": {
+        "default": "mdi:weather-sunset-down"
+      }
+    }
+  },
+  "services": {
+    "set_channels": {
+      "service": "mdi:tune-vertical"
+    },
+    "get_profile": {
+      "service": "mdi:chart-bell-curve"
+    },
+    "set_profile": {
+      "service": "mdi:chart-timeline-variant"
+    }
+  }
+}

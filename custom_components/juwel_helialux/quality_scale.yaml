@@ -1,0 +1,117 @@
+# Integration Quality Scale, selbst geprüft (keine Core-Integration, die Stufe ist nicht offiziell).
+# Regeln: https://developers.home-assistant.io/docs/core/integration-quality-scale/rules
+rules:
+  # Bronze
+  action-setup:
+    status: done
+    comment: set_channels, get_profile und set_profile werden in async_setup registriert.
+  appropriate-polling:
+    status: done
+    comment: Abfrage alle 15 s (in den Optionen 5–300 s), Profilnamen nur alle 10 Minuten.
+  brands: done
+  common-modules:
+    status: done
+    comment: DataUpdateCoordinator in coordinator.py, gemeinsame Basis in entity.py.
+  config-flow-test-coverage: done
+  config-flow: done
+  dependency-transparency:
+    status: exempt
+    comment: Keine externen Abhängigkeiten; eigener Client in api.py auf aiohttp.
+  docs-actions: done
+  docs-triggers:
+    status: exempt
+    comment: Keine eigenen Auslöser.
+  docs-conditions:
+    status: exempt
+    comment: Keine eigenen Bedingungen.
+  docs-high-level-description: done
+  docs-installation-instructions: done
+  docs-removal-instructions: done
+  entity-event-setup:
+    status: done
+    comment: CoordinatorEntity meldet sich selbst an und ab; Wetter- und Zeit-Rückrufe hängen an async_on_unload.
+  entity-unique-id:
+    status: done
+    comment: unique_ids der alten Integration (MrSleeps/juwel_helialux) unverändert übernommen.
+  has-entity-name: done
+  runtime-data: done
+  test-before-configure: done
+  test-before-setup:
+    status: done
+    comment: Erste Abfrage vor dem Einrichten, sonst ConfigEntryNotReady (übersetzt).
+  unique-config-entry:
+    status: done
+    comment: Gleiche Adresse wird abgelehnt; neue Einträge sind über die MAC der Lampe eindeutig.
+
+  # Silver
+  action-exceptions:
+    status: done
+    comment: Lampenfehler und ungültige Profile werden als übersetzte HomeAssistantError gemeldet.
+  config-entry-unloading:
+    status: done
+    comment: Plattformen entladen; Übergang abbrechen und Zustand speichern in async_shutdown.
+  docs-configuration-parameters: done
+  docs-installation-parameters: done
+  entity-unavailable:
+    status: done
+    comment: Nicht verfügbar nach drei gescheiterten Abfragen hintereinander.
+  integration-owner: done
+  log-when-unavailable:
+    status: done
+    comment: Der Coordinator loggt Ausfall und Rückkehr je einmal; einzelne Aussetzer werden überbrückt.
+  parallel-updates: done
+  reauthentication-flow:
+    status: exempt
+    comment: Die Lampe verlangt keine Anmeldung.
+  test-coverage: done
+
+  # Gold
+  devices: done
+  diagnostics:
+    status: done
+    comment: Ohne IP- und MAC-Adresse, auch nicht in Fehlertexten.
+  discovery-update-info:
+    status: todo
+    comment: Hängt an discovery.
+  discovery:
+    status: todo
+    comment: >-
+      Die Lampe kündigt sich nicht per mDNS/SSDP an; DHCP-Erkennung über das MAC-Präfix ist nicht geprüft.
+      Bestehende Einträge der alten Integration haben die URL als unique_id, eine Erkennung über die MAC
+      würde die schon eingerichtete Lampe erneut als neu melden.
+  docs-data-update: done
+  docs-examples: done
+  docs-known-limitations: done
+  docs-supported-devices: done
+  docs-supported-functions: done
+  docs-troubleshooting: done
+  docs-use-cases: done
+  dynamic-devices:
+    status: exempt
+    comment: Ein Eintrag = eine Lampe = ein Gerät; es kommen keine Geräte hinzu.
+  entity-category: done
+  entity-device-class: done
+  entity-disabled-by-default:
+    status: exempt
+    comment: >-
+      Die Entitäten stammen aus der alten Integration und werden in Dashboards genutzt; nichts ist laut oder
+      teuer abzufragen (alles kommt aus derselben Abfrage).
+  entity-translations: done
+  exception-translations: done
+  icon-translations: done
+  reconfiguration-flow: done
+  repair-issues:
+    status: done
+    comment: Hinweis, wenn die Lampenuhr mehr als 10 Minuten falsch geht.
+  stale-devices:
+    status: exempt
+    comment: Ein Eintrag = ein Gerät; es verschwindet nur mit dem Eintrag.
+
+  # Platinum
+  async-dependency:
+    status: done
+    comment: Eigener asynchroner Client (api.py) auf aiohttp.
+  inject-websession:
+    status: done
+    comment: Nutzt HAs Session (async_get_clientsession).
+  strict-typing: done
