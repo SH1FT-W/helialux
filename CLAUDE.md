@@ -49,8 +49,10 @@ Projektseite (`docs/index.html`) lesen die manifest.json selbst.
 - Testdaten sind fiktiv (192.0.2.x, 02:00:00:00:00:01, Profile wie `My_Profile`); keine echten Werte aus einem
   Heimnetz in Tests.
 - hassfest: `docker run --rm -v "$PWD/custom_components:/github/workspace/custom_components" ghcr.io/home-assistant/hassfest`
-- README-Bilder: Karten aus `docs/readme-images.json`, gerendert mit `theme/v1/readme-images/render.mjs <repo> cards`
-  aus sh1ft-w.github.io. Das Titelbild kommt aus `docs/readme-title.html` (headless Chrome, Befehl im Kommentar dort),
-  randlos mit `docs/images/stage-photo.jpg` (KI-generiertes Bild, frei verwendbar, ohne Metadaten), nicht mit render.mjs.
+- README-Bilder: Titelbild und Karten aus `docs/readme-images.json` mit `theme/v1/readme-images/render.mjs <repo>`
+  aus sh1ft-w.github.io: Titel als `docs/images/readme-title-{light,dark}.webp` (2560 × 1280, Fenster zeigt
+  `docs/images/title-shot-*.png`, den Funktionsblock der Projektseite mit 2× aufgenommen) plus `readme-title-social.png`
+  für die GitHub-Vorschau; die Karten stehen als Markdown-Tabellen zwischen `<!-- cards:… -->` im README, Icons in
+  `docs/images/icons/`. Die Projektseite zeigt das Titelbild im Hero.
 - Live: in einer Test-HA mit einer echten Lampe; danach die Lampe wieder dem eigenen Profil überlassen (manuelle
   Farbsimulation aus).

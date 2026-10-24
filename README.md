@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-title-dark.png" />
-  <img src="docs/images/readme-title-light.png" alt="HeliaLux: Your aquarium light, fully local. A rendered image of an aquarium with a HeliaLux LED light bar on its holders above the tank, planted with green plants and driftwood." />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-title-dark.webp" />
+  <img src="docs/images/readme-title-light.webp" alt="HeliaLux: Your aquarium light, fully local. The feature overview of the project page in a window." />
 </picture>
 
 <p>Local control for the Juwel HeliaLux SmartControl aquarium light in Home Assistant.<br/>
@@ -34,20 +34,26 @@ It replaces [MrSleeps' Juwel HeliaLux integration](https://github.com/MrSleeps/J
 <sub><b>JUST ARRIVED</b></sub>
 ## Steadier profiles, quieter logs.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-cards-new-dark.png" />
-  <img src="docs/images/readme-cards-new-light.png" alt="True to the profile (26.10.2): before the first point of a profile the value of that point applies, exactly as on the lamp. Safe profile names (26.10.2): names with characters the lamp cannot store are rejected before saving. Wind in any unit (26.10.2): clouds from weather convert knots and feet per second correctly, holding the state starts only once. Calendar versions (26.10.1): year, month and the release of that month, 26.10.2 is the second release of October 2026." />
-</picture>
+<!-- cards:new -->
+<table>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/chart-bell-curve-dark.svg"><img src="docs/images/icons/chart-bell-curve-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>True to the profile</b> <code>26.10.2</code><br>Before the first point of a profile the value of that point applies, exactly as on the lamp, instead of a wrongly extrapolated one.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/form-textbox-lock-dark.svg"><img src="docs/images/icons/form-textbox-lock-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Safe profile names</b> <code>26.10.2</code><br>Names with characters the lamp cannot store are rejected before saving, so a profile on the lamp is never mangled.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/weather-windy-dark.svg"><img src="docs/images/icons/weather-windy-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Wind in any unit</b> <code>26.10.2</code><br>Clouds from weather convert knots and feet per second correctly. Holding the state starts only once, even for two quick polls.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/calendar-outline-dark.svg"><img src="docs/images/icons/calendar-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Calendar versions</b> <code>26.10.1</code><br>Year, month and the release of that month: 26.10.2 is the second release of October 2026. The jump from 1.0.1 is intended, updates show up as usual.</td></tr>
+</table>
+<!-- /cards:new -->
 
 Every change, release by release, in the [changelog](CHANGELOG.md).
 
 <a id="features"></a>
 ## Features
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-cards-features-dark.png" />
-  <img src="docs/images/readme-cards-features-light.png" alt="Every channel a slider: white, blue, green and red from 0 to 100 percent, plus the service set_channels. An RGBW light with transitions: brightness keeps the mix, transition fades in gentle steps, switching on brings back the last mix. Holds what you set: after a power cut the colour comes back, the manual colour simulation is extended before it runs out. No fight with the app: changes in the Juwel app are taken over, the daytime simulation makes Home Assistant step back. Profiles and weekly plan: get_profile and set_profile, one profile for all days or per weekday. Clouds, sun and weather: cloud strength and motion, cloud window, clouds from a weather entity, sun cycle. Acclimatization: a new tank starts dimmed and reaches full brightness after 1 to 12 weeks. Robust, with diagnostics: one request at a time, unavailable only after three misses, clock offset repair issue and diagnostics download." />
-</picture>
+<!-- cards:features -->
+<table>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/tune-vertical-dark.svg"><img src="docs/images/icons/tune-vertical-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Every channel a slider</b><br>White, blue, green and red from 0 to 100 %, right on the device page, plus the service set_channels.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/lightbulb-on-outline-dark.svg"><img src="docs/images/icons/lightbulb-on-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>An RGBW light with transitions</b><br>Brightness keeps the mix, transition fades in gentle steps, switching on brings back the last mix instead of 100 % white.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/shield-check-outline-dark.svg"><img src="docs/images/icons/shield-check-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Holds what you set</b><br>After a power cut or lamp restart the colour comes back by itself, the manual colour simulation is extended before it runs out.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/cellphone-dark.svg"><img src="docs/images/icons/cellphone-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>No fight with the app</b><br>Changes in the Juwel app are taken over. Start the daytime simulation and Home Assistant steps back.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/calendar-week-dark.svg"><img src="docs/images/icons/calendar-week-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Profiles and weekly plan</b><br>Read and write whole profiles with get_profile and set_profile, one profile for all days or one per weekday.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/weather-partly-cloudy-dark.svg"><img src="docs/images/icons/weather-partly-cloudy-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Clouds, sun and weather</b><br>Cloud strength and motion, a cloud window, clouds from a weather entity and a sun cycle that follows sunrise and sunset.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/sprout-outline-dark.svg"><img src="docs/images/icons/sprout-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Acclimatization</b><br>A new tank starts dimmed (10 to 100 %) and reaches full brightness after 1 to 12 weeks.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/stethoscope-dark.svg"><img src="docs/images/icons/stethoscope-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Robust, with diagnostics</b><br>One request at a time, lost commands repeated, unavailable only after three misses. Clock offset repair issue and a diagnostics download.</td></tr>
+</table>
+<!-- /cards:features -->
 
 - **Keep manual colour:** on, Home Assistant holds the colour permanently; off, the lamp's profile takes over again after the set duration (handy for a quick manual tweak).
 - **Profile curve as data:** points per channel, clouds and what the profile would show right now, for charts in dashboards.
@@ -56,10 +62,13 @@ Every change, release by release, in the [changelog](CHANGELOG.md).
 <a id="entities"></a>
 ## Entities
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-cards-entities-dark.png" />
-  <img src="docs/images/readme-cards-entities-light.png" alt="Light: light.trigon_190_light, RGBW with absolute channel values, brightness and transition. Channel numbers: white, blue, green and red from 0 to 100 percent, plus simulation durations. Switches: manual_color_simulation, manual_daytime_simulation, keep_manual, sun_cycle, acclimatization and weather_clouds. Selects and times: profil, profile_monday to _sunday, cloud_intensity, cloud_motion, cloud_from, cloud_to, sun_earliest, sun_latest. Sensors: channel values, current_profile with curve, profile_now and week, device_time and profiles. Diagnostics: reachable, clock_offset and color_simulation_remaining." />
-</picture>
+<!-- cards:entities -->
+<table>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/lightbulb-outline-dark.svg"><img src="docs/images/icons/lightbulb-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Light</b><br>light.trigon_190_light: RGBW with absolute channel values (0 to 255 = 0 to 100 %), brightness and transition.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/tune-variant-dark.svg"><img src="docs/images/icons/tune-variant-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Channel numbers</b><br>white, blue, green and red from 0 to 100 %, plus the durations of the colour and daytime simulation.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/toggle-switch-outline-dark.svg"><img src="docs/images/icons/toggle-switch-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Switches</b><br>manual_color_simulation, manual_daytime_simulation, keep_manual, sun_cycle, acclimatization and weather_clouds.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/form-dropdown-dark.svg"><img src="docs/images/icons/form-dropdown-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Selects and times</b><br>profil, profile_monday to _sunday, cloud_intensity and cloud_motion. cloud_from, cloud_to, sun_earliest and sun_latest.</td></tr>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/information-outline-dark.svg"><img src="docs/images/icons/information-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Sensors</b><br>Channel values in %, current_profile with the attributes curve, profile_now and week, device_time and profiles.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/stethoscope-dark.svg"><img src="docs/images/icons/stethoscope-light.svg" width="26" height="26" alt=""></picture></td><td width="46%" valign="top"><b>Diagnostics</b><br>reachable with the last error, clock_offset and color_simulation_remaining.</td></tr>
+</table>
+<!-- /cards:entities -->
 
 All IDs start with the tank name, for example `light.trigon_190_light`, and are the same as in the previous integration. Entity names are available in English and German.
 
@@ -226,10 +235,11 @@ When you open an [issue](https://github.com/SH1FT-W/helialux/issues), please att
 
 ## How it works
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-cards-how-dark.png" />
-  <img src="docs/images/readme-cards-how-light.png" alt="statusvars.js: channels, mode and the lamp clock, every 15 seconds over the lamp's own web server. POST /stat: channels, colour and daytime simulation, one request after the other. /pedit and /week.html: profile points, clouds and the weekly plan, saved permanently in the lamp." />
-</picture>
+<!-- cards:how -->
+<table>
+<tr><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/download-network-outline-dark.svg"><img src="docs/images/icons/download-network-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="29%" valign="top"><b>statusvars.js</b><br>Channels, mode and the lamp clock, every 15 seconds over the lamp's own web server.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/palette-outline-dark.svg"><img src="docs/images/icons/palette-outline-light.svg" width="26" height="26" alt=""></picture></td><td width="29%" valign="top"><b>POST /stat</b><br>Channels, colour and daytime simulation, one request after the other.</td><td width="34" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/icons/calendar-edit-dark.svg"><img src="docs/images/icons/calendar-edit-light.svg" width="26" height="26" alt=""></picture></td><td width="29%" valign="top"><b>/pedit and /week.html</b><br>Profile points, clouds and the weekly plan, saved permanently in the lamp.</td></tr>
+</table>
+<!-- /cards:how -->
 
 Everything runs locally over the lamp's web server. Home Assistant remembers what it last wanted (mode, channels, last mix, end of the colour simulation) and holds that state: if the lamp lost its colour, it is restored (at most every 2 minutes); less than 30 minutes left, the simulation is extended; changed in the app or web interface, the change is taken over; daytime simulation started on the lamp, Home Assistant steps back. Protocol notes are in [`CLAUDE.md`](CLAUDE.md) (German).
 
