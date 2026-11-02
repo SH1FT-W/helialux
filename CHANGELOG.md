@@ -1,7 +1,11 @@
 # Changelog
 
-## Unreleased
+## 26.11.1 – 02.11.2026
 
+- "Reconfigure" only accepts the lamp that belongs to the entry: another HeliaLux lamp at the new address is
+  rejected instead of taking the entry over. Entries created by this integration compare the MAC (unique_id),
+  entries taken over from the old integration (lamp URL as unique_id) compare with the MAC of their device.
+- `docs/ha-annahmen.md`: what the integration relies on in Home Assistant and which test covers it.
 - Prepared for public release: Apache 2.0 license and NOTICE, English README with pictures in the project theme,
   project website (`docs/index.html`), issue template, HACS validation workflow, this changelog.
 - Tests, examples and service descriptions use fictitious addresses, MAC and profile names.

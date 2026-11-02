@@ -23,7 +23,8 @@
     },
     "abort": {
       "already_configured": "This lamp is already set up.",
-      "reconfigure_successful": "Address changed."
+      "reconfigure_successful": "Address changed.",
+      "unique_id_mismatch": "A different lamp answers at this address. Enter the address of the lamp that belongs to this entry."
     }
   },
   "options": {

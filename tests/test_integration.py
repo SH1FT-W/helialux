@@ -13,12 +13,12 @@ from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er, issue_registry as ir
 import pytest
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
+from pytest_homeassistant_custom_component.common import MockConfigEntry, async_fire_time_changed
 
 from custom_components.juwel_helialux.const import DOMAIN
 from custom_components.juwel_helialux.diagnostics import async_get_config_entry_diagnostics
 
-from .conftest import ENTRY_ID, FakeLamp
+from .conftest import ENTRY_ID, FakeLamp, old_entry
 
 LIGHT = "light.trigon_190_light"
 
@@ -270,6 +270,92 @@ async def test_options_and_reconfigure(hass: HomeAssistant, setup, lamp: FakeLam
     )
     assert result["reason"] == "reconfigure_successful"
     assert setup.data["tank_host"] == "192.0.2.20"
+
+
+async def test_reconfigure_other_lamp_aborts(hass: HomeAssistant, setup, lamp: FakeLamp):
+    """Old entry (URL as unique_id): the MAC of its device decides, another lamp cannot take it over."""
+    lamp.mac = "02:00:00:00:00:02"
+    result = await setup.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.30", "tank_protocol": "http"}
+    )
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "unique_id_mismatch"
+    assert setup.data["tank_host"] == "192.0.2.10"
+    assert setup.unique_id == "http://192.0.2.10"
+    lamp.mac = None  # a lamp without MAC cannot prove it is the same one
+    result = await setup.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.30", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "unique_id_mismatch"
+    assert setup.data["tank_host"] == "192.0.2.10"
+
+
+async def test_reconfigure_same_lamp_keeps_old_unique_id(hass: HomeAssistant, setup, lamp: FakeLamp):
+    """Same lamp under a new IP: allowed, the old URL unique_id stays as it is."""
+    lamp.mac = "02-00-00-00-00-01"  # spelling of the MAC does not matter
+    result = await setup.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.20", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "reconfigure_successful"
+    assert setup.data["tank_host"] == "192.0.2.20"
+    assert setup.unique_id == "http://192.0.2.10"
+
+
+async def test_reconfigure_mac_entry(hass: HomeAssistant, lamp: FakeLamp):
+    """Entry created by this integration (MAC as unique_id): only the same lamp may replace the address."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        version=2,
+        minor_version=2,
+        unique_id="02:00:00:00:00:01",
+        data={"tank_host": "192.0.2.10", "tank_name": "Trigon 190", "tank_protocol": "http"},
+        options={"scan_interval": 15},
+    )
+    entry.add_to_hass(hass)
+    lamp.mac = "02:00:00:00:00:02"
+    result = await entry.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.30", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "unique_id_mismatch"
+    assert entry.data["tank_host"] == "192.0.2.10"
+    lamp.mac = None
+    result = await entry.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.30", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "unique_id_mismatch"
+    lamp.mac = "02:00:00:00:00:01"
+    result = await entry.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.20", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "reconfigure_successful"
+    assert entry.data["tank_host"] == "192.0.2.20"
+    assert entry.unique_id == "02:00:00:00:00:01"
+    await hass.async_block_till_done()
+    await hass.config_entries.async_unload(entry.entry_id)
+    await hass.async_block_till_done()
+
+
+async def test_reconfigure_without_known_mac(hass: HomeAssistant, lamp: FakeLamp):
+    """Old entry whose lamp never reported a MAC: nothing to compare, the new address is taken as before."""
+    lamp.mac = None
+    entry = old_entry()
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    lamp.mac = "02:00:00:00:00:02"
+    result = await entry.start_reconfigure_flow(hass)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"tank_host": "192.0.2.20", "tank_protocol": "http"}
+    )
+    assert result["reason"] == "reconfigure_successful"
+    await hass.config_entries.async_unload(entry.entry_id)
+    await hass.async_block_till_done()
 
 
 async def test_channel_sliders(hass: HomeAssistant, setup, lamp: FakeLamp):

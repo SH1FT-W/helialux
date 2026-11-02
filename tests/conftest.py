@@ -36,6 +36,7 @@ class FakeLamp:
             "Standard",
         ]
         self.lamp = "4Ch"
+        self.mac: str | None = "02:00:00:00:00:01"
         self.offline = False
         self.editor = 0
         # Profile wie in der Lampe: Stützpunkte, Kanäle W/B/G/R, Wolken
@@ -103,11 +104,10 @@ class FakeLamp:
         p["cI"], p["cM"] = arr("CINT"), arr("CMOT")
         return json.dumps({"A": {"action": "31"}, "C": {"no": 4, "ch": self.levels}})
 
-    @staticmethod
-    def devvars() -> str:
+    def devvars(self) -> str:
         return (
             "debugMode=0;updSer='';lang=0;wlan=1;"
-            "info=['HeliaLux SmartControl','V1.1C','V2.2.2','192.0.2.10','02:00:00:00:00:01'];"
+            f"info=['HeliaLux SmartControl','V1.1C','V2.2.2','192.0.2.10','{self.mac or ''}'];"
         )
 
     def reply(self, action: Any) -> str:
