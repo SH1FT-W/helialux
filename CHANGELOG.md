@@ -1,5 +1,17 @@
 # Changelog
 
+## 26.11.2 – 02.11.2026
+
+- **DHCP discovery:** Home Assistant recognises the lamp by its MAC address (prefix registered to JUWEL Aquarium)
+  and offers it under "Discovered"; only the aquarium name is asked for. A lamp that is already set up is not
+  offered again.
+- **New IP address picked up by itself:** when a known lamp shows up under a new address, its entry is updated and
+  reloaded. Entries taken over from the old integration (lamp URL as unique_id) are found through the MAC of their
+  device. Addresses entered as host names stay as they are.
+- Entries with the lamp URL as unique_id switch to the lamp's MAC address, when that is unambiguous (the device
+  reported exactly one MAC and no other entry uses it). Entity IDs, unique_ids of the entities, history and device
+  stay unchanged.
+
 ## 26.11.1 – 02.11.2026
 
 - "Reconfigure" only accepts the lamp that belongs to the entry: another HeliaLux lamp at the new address is

@@ -22,6 +22,9 @@ Ordner tauschen, Entity-IDs, Verlauf, Gerät und Automationen bleiben. Kein Code
   → verlängern; in App/Weboberfläche geändert → übernehmen; Tagsimulation an der Lampe → HA gibt ab.
   Übergänge (`transition`) als Schritte ≥ 2 s über `async_call_later` (Rückrufe immer `@callback`!).
   Uhrabweichung (Lampenuhr vs. HA) → Reparatur-Hinweis ab 10 Min.
+- `device.py` MAC-Hilfen: alte Einträge (URL als unique_id) über die MAC ihres Geräts finden; Migration 2.2 → 2.3
+  setzt die MAC als unique_id nur, wenn eindeutig (genau eine MAC, kein anderer Eintrag damit). DHCP-Erkennung
+  (`async_step_dhcp`, OUI A8:E5:52 + `registered_devices`) zieht eine neue IP im Eintrag nach (Hostnamen bleiben).
 - `light.py` rgbw_color = absolute Kanalwerte (wie alt, Automation schickt absolute Werte); nur brightness skaliert
   die Mischung; turn_on ohne Werte = letzte Mischung (alt: 100 % Weiß).
 - unique_ids: `<slug>_light|_white|…`, Zahlen `<entry_id>_<key>`, Select `<slug>_profile_select`. Nicht ändern.

@@ -71,14 +71,15 @@ rules:
     status: done
     comment: Ohne IP- und MAC-Adresse, auch nicht in Fehlertexten.
   discovery-update-info:
-    status: todo
-    comment: Hängt an discovery.
-  discovery:
-    status: todo
+    status: done
     comment: >-
-      Die Lampe kündigt sich nicht per mDNS/SSDP an; DHCP-Erkennung über das MAC-Präfix ist nicht geprüft.
-      Bestehende Einträge der alten Integration haben die URL als unique_id, eine Erkennung über die MAC
-      würde die schon eingerichtete Lampe erneut als neu melden.
+      DHCP-Erkennung trägt eine neue IP in den bestehenden Eintrag ein und lädt ihn neu; alte Einträge (URL als
+      unique_id) werden über die MAC ihres Geräts gefunden. Als Hostname eingetragene Adressen bleiben.
+  discovery:
+    status: done
+    comment: >-
+      DHCP über das MAC-Präfix A8:E5:52 (IEEE: JUWEL Aquarium) und registered_devices; mDNS/SSDP kündigt die
+      Lampe nicht an. Alte Einträge mit URL als unique_id wechseln auf die MAC, wenn sie eindeutig ist.
   docs-data-update: done
   docs-examples: done
   docs-known-limitations: done

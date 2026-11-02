@@ -46,7 +46,7 @@ async def test_old_entry_keeps_entity_ids(hass: HomeAssistant, setup, lamp: Fake
     ):
         platform = entity_id.split(".")[0]
         assert reg.async_get_entity_id(platform, DOMAIN, uid), (entity_id, uid)
-    assert setup.minor_version == 2
+    assert setup.minor_version == 3
     assert setup.options == {"scan_interval": 15}
     assert "update_interval" not in setup.data
     state = hass.states.get(LIGHT)

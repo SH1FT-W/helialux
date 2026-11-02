@@ -27,6 +27,7 @@ from .const import (
     STORAGE_VERSION,
 )
 from .coordinator import HeliaLuxCoordinator
+from .device import mac_unique_id
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -129,7 +130,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Einträge der alten Integration übernehmen (Version 2.1 → 2.2).
+    """Einträge der alten Integration übernehmen (Version 2.1 → 2.2), dann URL → MAC als unique_id (2.3).
 
     Die alte Integration speicherte ein Abfrageintervall in Minuten (das sie dann ignorierte) und
     kopierte Host/Name zusätzlich in die Optionen. Übrig bleibt: Host/Name/Protokoll in `data`,
@@ -144,4 +145,12 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             entry, data=data, options={CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL}, minor_version=2
         )
         _LOGGER.info("Eintrag %s übernommen", entry.title)
+    if entry.version == 2 and entry.minor_version < 3:
+        # The MAC lets DHCP discovery recognise the lamp; entity unique_ids do not change.
+        # Without a safe MAC (see device.mac_unique_id) the URL stays and discovery finds
+        # the entry through its device instead.
+        mac = mac_unique_id(hass, entry)
+        hass.config_entries.async_update_entry(entry, unique_id=mac or entry.unique_id, minor_version=3)
+        if mac:
+            _LOGGER.info("Entry %s now uses the lamp's MAC as unique_id", entry.title)
     return True

@@ -187,6 +187,8 @@ Requires Home Assistant 2026.9 or newer.
 
 Before creating the entry the integration queries the lamp; if it does not answer, "The lamp does not respond" appears. A new IP address can be entered later with **three dots > Reconfigure** (the name stays).
 
+**Discovery:** Home Assistant recognises the lamp on the network by its MAC address (prefix of JUWEL Aquarium) and offers it under **Discovered**; only the aquarium name is asked for. If the lamp gets a new IP address, the integration updates its entry by itself, also for entries taken over from MrSleeps' integration. An address entered as a host name is left as it is. Discovery needs Home Assistant to see the lamp's DHCP requests (same network). A router integration that tracks clients (for example UniFi) also works, but Home Assistant only reads it at start, so a new address is then picked up after the next restart. Otherwise set the lamp up by its IP address as above.
+
 ### Options
 
 | Option | Meaning |
@@ -208,11 +210,11 @@ Three entities of the old integration remain as "no longer provided" (`sensor.<n
 - **Lamp clock:** the lamp sets its clock by NTP (`ptbtime1.ptb.de`). If it has no internet access, UDP 123 has to be allowed outwards, otherwise the profile runs at the wrong time.
 - **Data updates:** Home Assistant reads the state every 15 seconds (options) and the profile names every 10 minutes. Changes in the Juwel app therefore show up with up to 15 seconds delay. The lamp only handles one request at a time; all commands run one after the other.
 - **Sun cycle and acclimatization** recalculate the active profile every night at 03:05 and write it to the lamp. Home Assistant keeps the original; when both are off, it is written back.
-- **One lamp per entry, no automatic discovery.** Each lamp is set up by its IP address.
+- **One lamp per entry.** Each lamp has its own entry; a discovered lamp that is already set up is not offered again.
 
 ## Troubleshooting
 
-- **All entities "unavailable".** The lamp did not answer three times in a row. Check the IP address in your router and enter it with **three dots > Reconfigure** if needed. Single lost requests are bridged.
+- **All entities "unavailable".** The lamp did not answer three times in a row. Check the IP address in your router and enter it with **three dots > Reconfigure** if needed (with discovery, a new address is usually picked up by itself). Single lost requests are bridged.
 - **Colour jumps back.** Usually the lamp's web interface is still open in a browser (see above).
 - **Profile runs at the wrong time.** See the notice under *Repairs*: the lamp clock cannot reach its NTP server.
 - **"The lamp did not accept the command".** The lamp was not reachable or refused; the reason follows the colon.

@@ -1,5 +1,6 @@
 {
   "config": {
+    "flow_title": "{name} ({host})",
     "step": {
       "user": {
         "title": "Set up Juwel HeliaLux",
@@ -8,6 +9,13 @@
           "tank_host": "IP address",
           "tank_name": "Aquarium name",
           "tank_protocol": "Protocol"
+        }
+      },
+      "discovery_confirm": {
+        "title": "Juwel HeliaLux found",
+        "description": "Found a HeliaLux SmartControl at {host}. The name determines the entity IDs.",
+        "data": {
+          "tank_name": "Aquarium name"
         }
       },
       "reconfigure": {
@@ -23,6 +31,8 @@
     },
     "abort": {
       "already_configured": "This lamp is already set up.",
+      "already_in_progress": "This lamp is already being set up.",
+      "cannot_connect": "The lamp does not respond. Check the address and Wi-Fi.",
       "reconfigure_successful": "Address changed.",
       "unique_id_mismatch": "A different lamp answers at this address. Enter the address of the lamp that belongs to this entry."
     }
