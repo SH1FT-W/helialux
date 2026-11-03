@@ -7,55 +7,50 @@ Ordner tauschen, Entity-IDs, Verlauf, Gerät und Automationen bleiben. Kein Code
 `NOTICE`).
 
 - Repo ist **öffentlich**: nichts Persönliches ins Repo (keine Namen, echten IPs/MACs/Profilnamen, Heimnetz-Details,
-  lokalen Pfade). Testdaten bleiben fiktiv.
+  lokalen Pfade). Testdaten bleiben fiktiv (192.0.2.x, 02:00:00:00:00:01, Profile wie `My_Profile`).
 - README, CHANGELOG, Release-Notizen, Issue-Texte und Commit-Texte auf Englisch.
 - Lokal committen ok, Push und Releases nur nach Rückfrage.
 
 ## Aufbau (`custom_components/juwel_helialux/`)
-- `api.py` Lampe: liest `statusvars.js`/`wpvars.js`/`devvars.js`, schreibt `POST /stat` (10 Kanäle, 12 Tagsimulation,
-  14 Farbsimulation inkl. Kanäle + `ctime`) und `POST /week.html` (Profil für alle Wochentage). Kanalreihenfolge
-  W, B, G, R (0–100 %). Eine Anfrage nach der anderen (Lock + 0,15 s Pause), Schreiben 1× wiederholt.
-  **`setvars.js` nie lesen** (WLAN-Passwörter im Klartext). Profile speichern immer mit `pedit` action 30 (dauerhaft); 31 ist nur der Zwischenstand des Editors.
-- `coordinator.py` Abfrage alle 15 s; erst nach 3 Fehlschlägen nicht verfügbar. `desired` (Store) = was HA zuletzt
-  wollte: Modus manual/auto, Kanäle, letzte Einschalt-Mischung, Ablauf der Farbsimulation. Hält den Zustand:
-  Lampe hat Farbe verloren (Neustart/abgelaufen) → wiederherstellen (höchstens alle 2 Min.); Restlaufzeit < 30 Min.
-  → verlängern; in App/Weboberfläche geändert → übernehmen; Tagsimulation an der Lampe → HA gibt ab.
-  Übergänge (`transition`) als Schritte ≥ 2 s über `async_call_later` (Rückrufe immer `@callback`!).
-  Uhrabweichung (Lampenuhr vs. HA) → Reparatur-Hinweis ab 10 Min.
-- `device.py` MAC-Hilfen: alte Einträge (URL als unique_id) über die MAC ihres Geräts finden; Migration 2.2 → 2.3
-  setzt die MAC als unique_id nur, wenn eindeutig (genau eine MAC, kein anderer Eintrag damit). DHCP-Erkennung
-  (`async_step_dhcp`, OUI A8:E5:52 + `registered_devices`) zieht eine neue IP im Eintrag nach (Hostnamen bleiben).
-- `light.py` rgbw_color = absolute Kanalwerte (wie alt, Automation schickt absolute Werte); nur brightness skaliert
-  die Mischung; turn_on ohne Werte = letzte Mischung (alt: 100 % Weiß).
-- unique_ids: `<slug>_light|_white|…`, Zahlen `<entry_id>_<key>`, Select `<slug>_profile_select`. Nicht ändern.
-  Entity-IDs englisch wie alt (`entity.py` setzt sie für neue Entitäten).
+- `api.py` Lampe über HTTP (`*vars.js` lesen, `POST /stat`, `/week.html`, `/pedit`); eine Anfrage nach der anderen.
+- `coordinator.py` Abfrage, `desired` (Store) = was HA zuletzt wollte; hält den Zustand gegen Neustart/Ablauf der
+  Lampe, übernimmt Änderungen aus App/Weboberfläche, Übergänge, Uhrabweichung → Reparatur-Hinweis.
+- `device.py` MAC-Hilfen, Migration alter Einträge (URL als unique_id → MAC), DHCP-Erkennung zieht neue IP nach.
+- `weather.py` rein: Wolken nach echtem Wetter. `light.py`, `number.py`, `select.py` usw. Entitäten.
 - Logo: `brand/` (offizielle Juwel-Wortmarke von juwel-aquarium.de, Quelle `assets/*.svg`).
 
+## Warum es so ist (steht nicht im Code)
+- **`setvars.js` nie lesen** (WLAN-Passwörter im Klartext).
+- Profile speichern immer mit `pedit` action 30 (dauerhaft); 31 ist nur der Zwischenstand des Editors.
+- Rückrufe von `async_call_later` immer `@callback`, sonst führt HA sie in einem Hilfs-Thread aus.
+- Migration setzt die MAC als unique_id nur, wenn eindeutig (genau eine MAC, kein anderer Eintrag damit).
+- `light.py` rgbw_color = absolute Kanalwerte wie in der alten Integration (Automationen schicken absolute Werte); nur
+  brightness skaliert die Mischung; turn_on ohne Werte = letzte Mischung (alt: 100 % Weiß).
+- Tagsimulation an der Lampe → HA gibt ab.
+- unique_ids: `<slug>_light|_white|…`, Zahlen `<entry_id>_<key>`, Select `<slug>_profile_select`. Nicht ändern.
+  Entity-IDs englisch wie alt (`entity.py` setzt sie für neue Entitäten).
+
 ## Version
-Kalender-Schema **YY.M.N** ohne v (Jahr zweistellig, Monat ohne führende Null, N = laufende Nummer im Monat ab 1;
-es zählen nur echte, veröffentlichte GitHub-Releases des Monats, auch alte X.Y.Z; bloße Tags nicht; ohne Release im Monat → .1; neuer Monat → wieder .1).
-Jedes Release als GitHub-Release veröffentlichen (Tag + Release-Titel ohne v = genau die manifest-Version), sonst zählt es nicht mit.
-Nächste Nummer immer aus `tools/next-version`, nie von Hand hochzählen, keine Patch-/Minor-Unterscheidung
-(+ `CHANGELOG.md` `## YY.M.N – DD.MM.YYYY`, englisch). Die Versions-Badge im README und die Versionszeile der
-Projektseite (`docs/index.html`) lesen die manifest.json selbst.
+Versionen über `tools/next-version` (Regeln in der globalen CLAUDE.md); Tag + Release-Titel = genau die
+manifest-Version. `CHANGELOG.md` `## YY.M.N – DD.MM.YYYY`, englisch. Die Versions-Badge im README und die
+Versionszeile der Projektseite (`docs/index.html`) lesen die manifest.json selbst.
 
 ## Prüfen
-
-- `python -m pytest -q -p no:logging --cov=custom_components/juwel_helialux` in einer venv mit `requirements_test.txt`
-  (nachgebaute Lampe in `tests/conftest.py`, Antworten von einer echten mitgeschnitten)
-- `uvx ruff check . && uvx ruff format --check .`, `uvx mypy@2.3.1 --python-executable <venv>/bin/python`
+- `LC_ALL=en_US.UTF-8 TZ=UTC ~/Software/recall/.venv/bin/python -m pytest -q -p no:logging --cov=custom_components/juwel_helialux`
+  (oder eine venv mit `requirements_test.txt`; nachgebaute Lampe in `tests/conftest.py`, Antworten von einer echten
+  mitgeschnitten)
+- `uvx ruff@0.16.9 check . && uvx ruff@0.16.9 format --check .`, `uvx mypy@2.3.1 --python-executable <venv>/bin/python`
+  (dieselben Versionen wie in der CI)
 - `python tools/pruefe-uebersetzungen.py` (strings.json gegen translations/*.json)
+- hassfest: `docker run --rm -v "$PWD/custom_components:/github/workspace/custom_components" ghcr.io/home-assistant/hassfest`
 - GitHub Actions `.github/workflows/pruefung.yml` (Vorlage repo-vorlagen/vorlagen/ci-ha-integration.yml): dasselbe bei
-  Push/PR auf main, montags zusätzlich gegen die neueste HA; Abdeckungsgrenze dort 96 % (`--cov-fail-under`).
+  Push/PR auf main, montags zusätzlich gegen die neueste HA; Abdeckungsgrenze 96 % (`--cov-fail-under`).
   Pakete der CI in `requirements_test.txt` (HA 2026.9.3). `.github/workflows/hacs.yml`: HACS-Validierung.
 - `tools/next-version` und `tools/pruefe-uebersetzungen.py` sind byteidentische Kopien der Vorlagen.
-- Testdaten sind fiktiv (192.0.2.x, 02:00:00:00:00:01, Profile wie `My_Profile`); keine echten Werte aus einem
-  Heimnetz in Tests.
-- hassfest: `docker run --rm -v "$PWD/custom_components:/github/workspace/custom_components" ghcr.io/home-assistant/hassfest`
-- README-Bilder: Titelbild und Karten aus `docs/readme-images.json` mit `theme/v1/readme-images/render.mjs <repo>`
-  aus sh1ft-w.github.io: Titel als `docs/images/readme-title-{light,dark}.webp` (2560 × 1280, Fenster zeigt
-  `docs/images/title-shot-*.png`, den Funktionsblock der Projektseite mit 2× aufgenommen) plus `readme-title-social.png`
-  für die GitHub-Vorschau; die Karten stehen als Markdown-Tabellen zwischen `<!-- cards:… -->` im README, Icons in
-  `docs/images/icons/`. Die Projektseite zeigt das Titelbild im Hero.
+- README-Bilder aus `docs/readme-images.json` mit `theme/v1/readme-images/render.mjs <repo>` aus sh1ft-w.github.io:
+  Titel `docs/images/readme-title-{light,dark}.webp` (2560 × 1280, Fenster zeigt `docs/images/title-shot-*.png` =
+  Funktionsblock der Projektseite, 2× aufgenommen) plus `readme-title-social.png` für die GitHub-Vorschau; Karten
+  als Tabellen zwischen `<!-- cards:… -->` im README, Icons in `docs/images/icons/`. Die Projektseite zeigt das
+  Titelbild im Hero.
 - Live: in einer Test-HA mit einer echten Lampe; danach die Lampe wieder dem eigenen Profil überlassen (manuelle
   Farbsimulation aus).
