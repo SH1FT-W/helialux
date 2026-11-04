@@ -34,7 +34,8 @@
       "already_in_progress": "This lamp is already being set up.",
       "cannot_connect": "The lamp does not respond. Check the address and Wi-Fi.",
       "reconfigure_successful": "Address changed.",
-      "unique_id_mismatch": "A different lamp answers at this address. Enter the address of the lamp that belongs to this entry."
+      "unique_id_mismatch": "A different lamp answers at this address. Enter the address of the lamp that belongs to this entry.",
+      "old_version_installed": "HeliaLux 26.11.2 or earlier is still installed (folder `/config/custom_components/juwel_helialux`). Remove it first so that two integrations do not control the same lamp: {url}"
     }
   },
   "options": {
@@ -226,6 +227,10 @@
     "clock_drift": {
       "title": "{name} clock is wrong",
       "description": "The lamp clock is off by {minutes} minutes (positive = ahead). This does not matter while Home Assistant controls the color, but the lamp's own profile will run at the wrong time.\n\nThe lamp syncs via NTP (ptbtime1.ptb.de); a firewall blocking UDP 123 is the usual cause. This notice disappears once the offset is below 5 minutes."
+    },
+    "old_version_installed": {
+      "title": "Old HeliaLux version still installed",
+      "description": "HeliaLux 26.11.2 or earlier (domain `juwel_helialux`) is still in `/config/custom_components/juwel_helialux`. Updating in the Marketplace does not remove that folder, so its entry keeps running and both integrations control the same lamp.\n\n1. Switch off sun cycle and acclimatization of the old entry.\n2. Delete the old entry under Settings > Devices & services.\n3. Delete the folder `/config/custom_components/juwel_helialux` and restart Home Assistant.\n4. If you already set up the new entry while the old one was running, its entities end in `_2`: delete the new entry as well and set it up again with the same aquarium name.\n\nThis notice disappears after the restart."
     }
   },
   "services": {

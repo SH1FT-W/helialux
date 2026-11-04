@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from custom_components.juwel_helialux.api import (
+from custom_components.helialux.api import (
     HeliaLuxClient,
     HeliaLuxError,
     hhmm,
@@ -124,7 +124,7 @@ async def test_real_http(hass, aioclient_mock):
 def test_profile_roundtrip_and_body():
     from urllib.parse import unquote
 
-    from custom_components.juwel_helialux.api import parse_profile, profile_body
+    from custom_components.helialux.api import parse_profile, profile_body
 
     lamp = FakeLamp()
     lamp.editor = 1
@@ -138,7 +138,7 @@ def test_profile_roundtrip_and_body():
 
 
 def test_levels_before_first_point_and_bad_name():
-    from custom_components.juwel_helialux.api import HeliaLuxProfile, profile_body
+    from custom_components.helialux.api import HeliaLuxProfile, profile_body
 
     # Profil beginnt erst um 07:00: davor gilt der erste Punkt, nichts wird rückwärts extrapoliert
     profile = HeliaLuxProfile(0, "Spät", (420, 480, 1439), ((10, 50, 0), (20, 60, 0)), (0, 0, 0), (0, 0, 0))
@@ -152,7 +152,7 @@ def test_levels_before_first_point_and_bad_name():
 
 
 def test_parse_profile_broken():
-    from custom_components.juwel_helialux.api import parse_profile
+    from custom_components.helialux.api import parse_profile
 
     with pytest.raises(HeliaLuxError):
         parse_profile("profNum=0;times=[0,1];CH1=[1];")
@@ -174,7 +174,7 @@ async def test_profile_guards():
 
 
 def test_weather_mapping():
-    from custom_components.juwel_helialux.weather import clouds_for
+    from custom_components.helialux.weather import clouds_for
 
     assert clouds_for("sunny", {"wind_speed": 40}) == (0, 0)
     assert clouds_for("partlycloudy", {"wind_speed": 5.5, "wind_speed_unit": "km/h"}) == (1, 1)

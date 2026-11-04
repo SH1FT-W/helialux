@@ -387,7 +387,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
       <div class="lane reveal d1"><div class="end"><b>Home Assistant</b><span><span class="en">on change</span><span class="de">bei Änderung</span></span></div><div class="arrow"><svg viewBox="0 0 120 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h112M108 2l6 5-6 5"/></svg>POST /stat</div><div class="end r"><b><span class="en">Colour</span><span class="de">Farbe</span></b><span><span class="en">channels, colour and daytime simulation</span><span class="de">Kanäle, Farb- und Tagsimulation</span></span></div></div>
       <div class="lane reveal d2"><div class="end"><b>Home Assistant</b><span><span class="en">profiles</span><span class="de">Profile</span></span></div><div class="arrow"><svg viewBox="0 0 120 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h112M108 2l6 5-6 5"/></svg>/pedit &middot; /week.html</div><div class="end r"><b><span class="en">Schedule</span><span class="de">Zeitplan</span></b><span><span class="en">profile points, clouds, weekly plan</span><span class="de">Profilpunkte, Wolken, Wochenplan</span></span></div></div>
     </div>
-    <p class="cap reveal"><span class="en">It replaces <a href="https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component">MrSleeps' Juwel HeliaLux integration</a> with the same domain and IDs. A rewrite, no code taken over; thanks for the groundwork.</span><span class="de">Sie ersetzt die <a href="https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component">Juwel-HeliaLux-Integration von MrSleeps</a> mit gleicher Domain und gleichen IDs. Ein Neubau ohne übernommenen Code; danke für die Vorarbeit.</span></p>
+    <p class="cap reveal"><span class="en">Its own domain <code>helialux</code>, next to <a href="https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component">MrSleeps' Juwel HeliaLux integration</a>. A rewrite, no code taken over; thanks for the groundwork.</span><span class="de">Eigene Domain <code>helialux</code>, neben der <a href="https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component">Juwel-HeliaLux-Integration von MrSleeps</a>. Ein Neubau ohne übernommenen Code; danke für die Vorarbeit.</span></p>
   </div>
 </section>
 
@@ -424,20 +424,23 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
         <p class="note"><span class="en">Tested with firmware 2.2.2 (hardware 1.1C) and four channels. Lamps with fewer channels get fewer sliders.</span><span class="de">Getestet mit Firmware 2.2.2 (Hardware 1.1C) und vier Kanälen. Lampen mit weniger Kanälen bekommen weniger Regler.</span></p>
       </div>
       <div class="panel full reveal" id="migrate">
-        <h3><span class="en">Coming from MrSleeps' integration</span><span class="de">Umstieg von der Integration von MrSleeps</span></h3>
+        <h3><span class="en">Moving over</span><span class="de">Umstieg</span></h3>
+        <p class="muted"><span class="en">From MrSleeps' integration or HeliaLux 26.11.2 and earlier (domain <code>juwel_helialux</code>). Nothing is taken over automatically.</span><span class="de">Von der Integration von MrSleeps oder HeliaLux 26.11.2 und älter (Domain <code>juwel_helialux</code>). Nichts wird automatisch übernommen.</span></p>
         <ol class="steps">
-          <li class="en"><b>Remove "Juwel Helialux Smart Controller" in the Marketplace</b>, but keep the integration entry.</li>
-          <li class="en"><b>Install Juwel HeliaLux</b> and restart Home Assistant.</li>
-          <li class="en"><b>Done.</b> The existing entry is taken over: entity IDs, history, device and automations stay.</li>
-          <li class="de"><b>„Juwel Helialux Smart Controller“ im Marketplace entfernen</b>, den Integrationseintrag aber behalten.</li>
-          <li class="de"><b>Juwel HeliaLux installieren</b> und Home Assistant neu starten.</li>
-          <li class="de"><b>Fertig.</b> Der vorhandene Eintrag wird übernommen: Entity-IDs, Verlauf, Gerät und Automationen bleiben.</li>
+          <li class="en"><b>Note the aquarium name</b> of the old entry, it sets the entity IDs. In HeliaLux, switch off sun cycle and acclimatization first.</li>
+          <li class="en"><b>Delete the old entry</b> and remove the old integration: MrSleeps' in the Marketplace, HeliaLux 26.11.2 and earlier by deleting <code>/config/custom_components/juwel_helialux</code> (the update leaves that folder in place). Restart.</li>
+          <li class="en"><b>Install Juwel HeliaLux</b>, restart and set the lamp up with the same aquarium name. Entity IDs and history stay.</li>
+          <li class="en"><b>Rename actions</b> from <code>juwel_helialux.*</code> to <code>helialux.*</code> in automations and scripts.</li>
+          <li class="de"><b>Aquariennamen notieren</b>, er bestimmt die Entity-IDs. In HeliaLux vorher Sonnenverlauf und Eingewöhnung ausschalten.</li>
+          <li class="de"><b>Alten Eintrag löschen</b> und die alte Integration entfernen: die von MrSleeps im Marketplace, HeliaLux 26.11.2 und älter durch Löschen von <code>/config/custom_components/juwel_helialux</code> (das Update lässt den Ordner liegen). Neu starten.</li>
+          <li class="de"><b>Juwel HeliaLux installieren</b>, neu starten und die Lampe mit demselben Aquariennamen einrichten. Entity-IDs und Verlauf bleiben.</li>
+          <li class="de"><b>Aktionen umbenennen</b> von <code>juwel_helialux.*</code> auf <code>helialux.*</code> in Automationen und Skripten.</li>
         </ol>
-        <p class="note"><span class="en">Three old entities stay behind as "no longer provided" (<code>sensor.&lt;name&gt;_combined_sensor</code> and two duplicate <code>binary_sensor.&lt;name&gt;_manual_*</code>) and can be deleted.</span><span class="de">Drei alte Entitäten bleiben als „nicht mehr bereitgestellt“ übrig (<code>sensor.&lt;name&gt;_combined_sensor</code> und zwei doppelte <code>binary_sensor.&lt;name&gt;_manual_*</code>) und können gelöscht werden.</span></p>
+        <p class="note"><span class="en">Delete the old entry first, otherwise the new entities get a <code>_2</code> suffix. Device automations, area, custom names, labels and exposure to voice assistants are set again; options start at their defaults.</span><span class="de">Erst den alten Eintrag löschen, sonst bekommen die neuen Entitäten ein <code>_2</code> angehängt. Geräte-Automationen, Bereich, eigene Namen, Labels und Freigaben für Sprachassistenten neu setzen; Optionen beginnen mit den Standardwerten.</span></p>
       </div>
       <div class="panel full reveal">
         <h3><span class="en">Without the Marketplace</span><span class="de">Ohne Marketplace</span></h3>
-        <p class="muted"><span class="en">Download the <a href="https://github.com/SH1FT-W/helialux/releases/latest">latest release</a>, copy its <code>custom_components/juwel_helialux</code> folder into <code>/config/custom_components/</code>, restart Home Assistant and add the lamp.</span><span class="de">Lade das <a href="https://github.com/SH1FT-W/helialux/releases/latest">neueste Release</a> herunter, kopiere den Ordner <code>custom_components/juwel_helialux</code> nach <code>/config/custom_components/</code>, starte Home Assistant neu und füge die Lampe hinzu.</span></p>
+        <p class="muted"><span class="en">Download the <a href="https://github.com/SH1FT-W/helialux/releases/latest">latest release</a>, copy its <code>custom_components/helialux</code> folder into <code>/config/custom_components/</code>, restart Home Assistant and add the lamp.</span><span class="de">Lade das <a href="https://github.com/SH1FT-W/helialux/releases/latest">neueste Release</a> herunter, kopiere den Ordner <code>custom_components/helialux</code> nach <code>/config/custom_components/</code>, starte Home Assistant neu und füge die Lampe hinzu.</span></p>
       </div>
     </div>
   </div>
@@ -506,7 +509,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   (function () {
     var el = document.getElementById('hl-version');
     function show(v) { if (v && el) el.textContent = 'Version ' + v; }
-    fetch('https://raw.githubusercontent.com/SH1FT-W/helialux/main/custom_components/juwel_helialux/manifest.json', { cache: 'no-store' })
+    fetch('https://raw.githubusercontent.com/SH1FT-W/helialux/main/custom_components/helialux/manifest.json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) { if (j && j.version) show(String(j.version)); else throw 0; })
       .catch(function () {

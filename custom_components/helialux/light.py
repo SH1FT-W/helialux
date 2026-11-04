@@ -1,8 +1,8 @@
 """Die Lampe als RGBW-Licht.
 
 Lampe: Weiß/Blau/Grün/Rot je 0–100 %. Home Assistant: rgbw_color (R, G, B, W) je 0–255.
-`rgbw_color` ist der absolute Kanalwert (wie bei der alten Integration – bestehende Automationen
-schicken absolute Werte), `brightness` ist der hellste Kanal.
+`rgbw_color` ist der absolute Kanalwert (as in MrSleeps' integration, so automations
+moved over keep working), `brightness` ist der hellste Kanal.
 
 - nur `rgbw_color`            → genau diese Kanalwerte
 - `rgbw_color` + `brightness` → Farbe so skaliert, dass der hellste Kanal `brightness` hat
@@ -36,7 +36,7 @@ PARALLEL_UPDATES = 0
 async def async_setup_entry(
     hass: HomeAssistant, entry: HeliaLuxConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
 ) -> None:
-    async_add_entities([HeliaLuxLight(entry.runtime_data, "light_name", f"{entry.runtime_data.slug}_light", "light")])
+    async_add_entities([HeliaLuxLight(entry.runtime_data, "light_name", f"{entry.entry_id}_light", "light")])
 
 
 def to_rgbw(levels: tuple[int, ...]) -> tuple[int, int, int, int]:
@@ -119,7 +119,7 @@ class HeliaLuxLight(HeliaLuxEntity, LightEntity):
         await self.coordinator.async_set_levels(levels, kwargs.get(ATTR_TRANSITION))
 
     async def async_set_channels(self, transition: float | None = None, **channels: int) -> None:
-        """Dienst juwel_helialux.set_channels: Kanäle in %, nicht genannte bleiben wie sie sind."""
+        """Dienst helialux.set_channels: Kanäle in %, nicht genannte bleiben wie sie sind."""
         levels = list(self._levels)
         for index, color in enumerate(("white", "blue", "green", "red")[: len(levels)]):
             if color in channels:
@@ -127,13 +127,13 @@ class HeliaLuxLight(HeliaLuxEntity, LightEntity):
         await self.coordinator.async_set_levels(tuple(levels), transition)
 
     async def async_get_profile(self, profile: str | None = None) -> dict[str, Any]:
-        """Dienst juwel_helialux.get_profile: ein Profil im Format von set_profile."""
+        """Dienst helialux.get_profile: ein Profil im Format von set_profile."""
         return profile_response(await self.coordinator.async_get_profile(profile))
 
     async def async_set_profile(
         self, points: list[dict[str, Any]], profile: str | None = None, name: str | None = None
     ) -> None:
-        """Dienst juwel_helialux.set_profile: Stützpunkte eines Profils neu setzen."""
+        """Dienst helialux.set_profile: Stützpunkte eines Profils neu setzen."""
         await self.coordinator.async_save_profile(profile, points, name)
 
     async def async_turn_off(self, **kwargs: Any) -> None:

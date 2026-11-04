@@ -197,10 +197,9 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
 
     async def _async_setup(self) -> None:
         stored = await self._store.async_load()
-        # Erster Start (auch nach dem Umstieg von der alten Integration): Zustand der Lampe übernehmen.
+        # First start: take over the lamp's current state.
         self._adopt_on_first_status = stored is None
-        if stored is None:
-            stored = await self._import_old_numbers()
+        stored = stored or {}
         self.desired = Desired.from_dict(stored.get("desired") or {})
         self.color_duration_h = float(stored.get("color_duration_h", DEFAULT_COLOR_DURATION_H))
         self.daytime_position_h = float(stored.get("daytime_position_h", 12.0))
@@ -218,21 +217,6 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             self.device = await self.client.device()
         except HeliaLuxError as err:
             _LOGGER.debug("Gerätedaten nicht lesbar: %s", err)
-
-    async def _import_old_numbers(self) -> dict[str, Any]:
-        """Einmalig die Regler-Werte der alten Integration übernehmen (je Regler eine eigene Datei)."""
-        out: dict[str, Any] = {}
-        entry_id = self.config_entry.entry_id
-        for key, attr in (
-            ("color_duration_h", "manual_color_simulation_duration"),
-            ("daytime_duration_h", "manual_daytime_simulation_duration"),
-            ("daytime_position_h", "daytime_simulation_position"),
-        ):
-            old: Store[dict[str, Any]] = Store(self.hass, 1, f"{DOMAIN}_{entry_id}_{attr}.json")
-            data = await old.async_load()
-            if data and isinstance(data.get("value"), int | float):
-                out[key] = float(data["value"])
-        return out
 
     def _save(self) -> None:
         self._store.async_delay_save(self._snapshot, 2)

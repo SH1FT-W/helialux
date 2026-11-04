@@ -25,13 +25,14 @@ from .const import (
     MIN_SCAN_INTERVAL,
 )
 from .device import device_macs, is_ip, is_mac, mac_unique_id
+from .old_version import MOVING_OVER_URL, async_old_version_installed
 
 PROTOCOLS = ["http", "https"]
 
 
 class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
-    VERSION = 2
-    MINOR_VERSION = 3
+    VERSION = 1
+    MINOR_VERSION = 1
 
     _discovered_host: str
 
@@ -40,7 +41,15 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
         await client.status()
         return await client.device()
 
+    async def _abort_if_old_version(self) -> ConfigFlowResult | None:
+        """The old version still runs its entry: a second entry would control the same lamp twice."""
+        if await async_old_version_installed(self.hass):
+            return self.async_abort(reason="old_version_installed", description_placeholders={"url": MOVING_OVER_URL})
+        return None
+
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        if abort := await self._abort_if_old_version():
+            return abort
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_TANK_HOST].strip()
@@ -53,7 +62,7 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
                 if device.mac:
                     await self.async_set_unique_id(format_mac(device.mac))
                     self._abort_if_unique_id_configured(updates={CONF_TANK_HOST: host})
-                    # Old entry (URL as unique_id) of this lamp: change its address with "Reconfigure".
+                    # Entry without MAC unique_id for this lamp: change its address with "Reconfigure".
                     if self._known_entry(format_mac(device.mac)):
                         return self.async_abort(reason="already_configured")
                 return self.async_create_entry(
@@ -73,7 +82,7 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     def _known_entry(self, mac: str) -> ConfigEntry | None:
-        """Entry of this lamp: MAC as unique_id first, else an old entry (URL as unique_id) whose
+        """Entry of this lamp: MAC as unique_id first, else an entry without MAC unique_id whose
         device reported this MAC and no other one (an older controller's MAC proves nothing)."""
         entries = self._async_current_entries(include_ignore=False)
         for entry in entries:
@@ -86,6 +95,8 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_dhcp(self, discovery_info: DhcpServiceInfo) -> ConfigFlowResult:
         """Lamp seen on the network: offer it, or update the address of the entry it belongs to."""
+        if abort := await self._abort_if_old_version():
+            return abort
         mac = format_mac(discovery_info.macaddress)
         ip = discovery_info.ip
         if entry := self._known_entry(mac):
@@ -104,7 +115,7 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
         return await self.async_step_discovery_confirm()
 
     def _update_discovered_entry(self, entry: ConfigEntry, mac: str, ip: str) -> ConfigFlowResult:
-        """New IP for a known lamp; an old entry also takes over the MAC as unique_id when that is safe."""
+        """New IP for a known lamp; an entry without MAC unique_id also takes it over when that is safe."""
         unique_id = mac if mac_unique_id(self.hass, entry) == mac else entry.unique_id
         if unique_id != entry.unique_id:
             # A discovery of this lamp still waiting for confirmation would otherwise create a second
@@ -125,7 +136,7 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_discovery_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Ask for the aquarium name (it determines the entity IDs)."""
         if user_input is not None:
-            # The lamp may have been set up (or an old entry taken over its MAC) while this form was open.
+            # The lamp may have been set up (or an entry taken over its MAC) while this form was open.
             if self.unique_id and self._known_entry(self.unique_id):
                 return self.async_abort(reason="already_configured")
             self._abort_if_unique_id_configured()
@@ -158,7 +169,7 @@ class HeliaLuxConfigFlow(ConfigFlow, domain=DOMAIN):
                 if is_mac(entry.unique_id) and device.mac:
                     await self.async_set_unique_id(format_mac(device.mac))
                     self._abort_if_unique_id_mismatch()
-                # Entry from the old integration (URL as unique_id): compare with the MAC of its device.
+                # Entry without MAC unique_id: compare with the MAC of its device.
                 # A lamp without MAC cannot prove it is the same one once a MAC is known.
                 known = {entry.unique_id} if is_mac(entry.unique_id) else device_macs(self.hass, entry.entry_id)
                 if known and (not device.mac or format_mac(device.mac) not in known):

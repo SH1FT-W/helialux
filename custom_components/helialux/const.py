@@ -3,10 +3,13 @@
 from datetime import timedelta
 from typing import Final
 
-DOMAIN: Final = "juwel_helialux"
+DOMAIN: Final = "helialux"
+# Domain of HeliaLux 26.11.2 and earlier. Only used to warn when that old version is still installed;
+# nothing is read from its entries.
+OLD_DOMAIN: Final = "juwel_helialux"
+OLD_VERSION_ISSUE: Final = "old_version_installed"
 
-# Schlüssel im Konfigurationseintrag – unverändert von der alten Integration übernommen,
-# damit der bestehende Eintrag ohne Neueinrichtung weiterläuft.
+# Keys in the config entry.
 CONF_TANK_HOST: Final = "tank_host"
 CONF_TANK_NAME: Final = "tank_name"
 CONF_TANK_PROTOCOL: Final = "tank_protocol"

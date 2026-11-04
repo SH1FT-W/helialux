@@ -6,15 +6,14 @@ This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 Acknowledgements
 ----------------
 
-This integration is a rewrite. It replaces the custom component
-MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component
+This integration is a rewrite with its own domain (helialux). It is an alternative
+to the custom component MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component
 (https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component,
-Apache License 2.0, Copyright 2022 Mr Sleeps) and keeps its domain (juwel_helialux),
-its configuration keys and its unique IDs so existing installations can switch over.
+Apache License 2.0, Copyright 2022 Mr Sleeps) and takes nothing over from it.
 No source code was taken from it or from moretea/pyHelialux, on which it is based;
 thanks to both for the groundwork on the lamp's local web interface.
 
-The Juwel word mark in custom_components/juwel_helialux/brand/ and assets/ is the
+The Juwel word mark in custom_components/helialux/brand/ and assets/ is the
 official logo of Juwel Aquarium, used only to identify the supported device.
 
 Trademarks

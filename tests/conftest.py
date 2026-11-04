@@ -10,8 +10,8 @@ from homeassistant.core import HomeAssistant
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.juwel_helialux.api import HeliaLuxError
-from custom_components.juwel_helialux.const import DOMAIN
+from custom_components.helialux.api import HeliaLuxError
+from custom_components.helialux.const import DOMAIN
 
 ENTRY_ID = "01KP8JHDEQ0K11S0CJKHTB56SM"
 
@@ -176,8 +176,8 @@ def auto_enable(enable_custom_integrations, hass: HomeAssistant):
 def no_waits():
     """Pausen zwischen Anfragen kosten im Test nur Zeit (und hängen bei eingefrorener Uhr)."""
     with (
-        patch("custom_components.juwel_helialux.api.MIN_REQUEST_GAP", 0),
-        patch("custom_components.juwel_helialux.api.RETRY_DELAY", 0),
+        patch("custom_components.helialux.api.MIN_REQUEST_GAP", 0),
+        patch("custom_components.helialux.api.RETRY_DELAY", 0),
     ):
         yield
 
@@ -185,28 +185,27 @@ def no_waits():
 @pytest.fixture
 def lamp():
     fake = FakeLamp()
-    with patch("custom_components.juwel_helialux.api.HeliaLuxClient._request", side_effect=fake.request):
+    with patch("custom_components.helialux.api.HeliaLuxClient._request", side_effect=fake.request):
         yield fake
 
 
-def old_entry(**options: Any) -> MockConfigEntry:
-    """So liegt der Eintrag der alten Integration in einer bestehenden Installation."""
+def make_entry(unique_id: str | None = None, **options: Any) -> MockConfigEntry:
+    """Entry as the config flow stores it; without unique_id when the lamp reported no MAC at setup."""
     return MockConfigEntry(
         domain=DOMAIN,
         entry_id=ENTRY_ID,
         title="Trigon 190",
-        version=2,
+        version=1,
         minor_version=1,
-        unique_id="http://192.0.2.10",
-        data={"tank_host": "192.0.2.10", "tank_name": "Trigon 190", "tank_protocol": "http", "update_interval": 1},
-        options=options
-        or {"tank_protocol": "http", "tank_host": "192.0.2.10", "tank_name": "Trigon 190", "update_interval": 1},
+        unique_id=unique_id,
+        data={"tank_host": "192.0.2.10", "tank_name": "Trigon 190", "tank_protocol": "http"},
+        options=options or {"scan_interval": 15},
     )
 
 
 @pytest.fixture
 async def setup(hass: HomeAssistant, lamp: FakeLamp):
-    entry = old_entry()
+    entry = make_entry()
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()

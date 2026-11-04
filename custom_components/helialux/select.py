@@ -20,7 +20,7 @@ async def async_setup_entry(
     coordinator = entry.runtime_data
     async_add_entities(
         [
-            ProfileSelect(coordinator, "profile", f"{coordinator.slug}_profile_select", "profil"),
+            ProfileSelect(coordinator, "profile", f"{coordinator.config_entry.entry_id}_profile_select", "profil"),
             *(WeekdaySelect(coordinator, day, name) for day, name in enumerate(WEEKDAYS)),
             CloudSelect(coordinator, "cloud_intensity", CLOUD_INTENSITY),
             CloudSelect(coordinator, "cloud_motion", CLOUD_MOTION),

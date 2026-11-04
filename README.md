@@ -8,14 +8,14 @@
 <p>Local control for the Juwel HeliaLux SmartControl aquarium light in Home Assistant.<br/>
 Robust, complete, no cloud.</p>
 
-[![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FSH1FT-W%2Fhelialux%2Fmain%2Fcustom_components%2Fjuwel_helialux%2Fmanifest.json&query=%24.version&label=version&style=flat-square&color=003A5D&labelColor=111111)](https://github.com/SH1FT-W/helialux/releases/latest)
+[![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FSH1FT-W%2Fhelialux%2Fmain%2Fcustom_components%2Fhelialux%2Fmanifest.json&query=%24.version&label=version&style=flat-square&color=003A5D&labelColor=111111)](https://github.com/SH1FT-W/helialux/releases/latest)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2026.9%2B-003A5D?style=flat-square&labelColor=111111&logo=homeassistant&logoColor=white)](https://www.home-assistant.io)
 [![Marketplace](https://img.shields.io/badge/Marketplace-custom%20repository-003A5D?style=flat-square&labelColor=111111)](https://hacs.xyz)
 [![IoT class](https://img.shields.io/badge/iot-local%20polling-003A5D?style=flat-square&labelColor=111111)](https://developers.home-assistant.io/docs/creating_integration_manifest/#iot-class)
-[![Quality scale](https://img.shields.io/badge/quality%20scale-silver%20(self--assessed)-003A5D?style=flat-square&labelColor=111111)](custom_components/juwel_helialux/quality_scale.yaml)
+[![Quality scale](https://img.shields.io/badge/quality%20scale-silver%20(self--assessed)-003A5D?style=flat-square&labelColor=111111)](custom_components/helialux/quality_scale.yaml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-003A5D?style=flat-square&labelColor=111111)](LICENSE)
 
-<p><a href="https://sh1ft-w.github.io/helialux"><b>Website</b></a> &nbsp;·&nbsp; <a href="#new">New</a> &nbsp;·&nbsp; <a href="#features">Features</a> &nbsp;·&nbsp; <a href="#entities">Entities</a> &nbsp;·&nbsp; <a href="#installation">Install</a> &nbsp;·&nbsp; <a href="#migration-from-mrsleeps-integration">Migration</a> &nbsp;·&nbsp; <a href="#troubleshooting">Troubleshooting</a> &nbsp;·&nbsp; <a href="CHANGELOG.md">Changelog</a></p>
+<p><a href="https://sh1ft-w.github.io/helialux"><b>Website</b></a> &nbsp;·&nbsp; <a href="#new">New</a> &nbsp;·&nbsp; <a href="#features">Features</a> &nbsp;·&nbsp; <a href="#entities">Entities</a> &nbsp;·&nbsp; <a href="#installation">Install</a> &nbsp;·&nbsp; <a href="#moving-over">Moving over</a> &nbsp;·&nbsp; <a href="#troubleshooting">Troubleshooting</a> &nbsp;·&nbsp; <a href="CHANGELOG.md">Changelog</a></p>
 
 </div>
 
@@ -23,7 +23,7 @@ Robust, complete, no cloud.</p>
 
 HeliaLux controls the LED lighting of Juwel aquariums with a **HeliaLux SmartControl** over the lamp's own web server in your Wi-Fi. It was built and tested on a **Trigon 190** (SmartControl 4Ch, firmware 2.2.2, hardware 1.1C).
 
-It replaces [MrSleeps' Juwel HeliaLux integration](https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component) and **keeps its domain `juwel_helialux` and its unique IDs**, so entities, history, device, automations and dashboards stay the same when you switch.
+It uses its own domain `helialux` and can be installed next to [MrSleeps' Juwel HeliaLux integration](https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component). Nothing is taken over automatically; [moving over](#moving-over) takes a few minutes and keeps your entity IDs and history.
 
 > [!NOTE]
 > HeliaLux is an independent project. It is not affiliated with, endorsed by or sponsored by Juwel Aquarium AG & Co. KG. Juwel and HeliaLux are trademarks of Juwel Aquarium AG & Co. KG.
@@ -122,7 +122,7 @@ data:
 ### Service `set_channels`
 
 ```yaml
-action: juwel_helialux.set_channels
+action: helialux.set_channels
 target:
   entity_id: light.trigon_190_light
 data:
@@ -140,7 +140,7 @@ Missing channels stay as they are.
 The lamp can play its daily schedule by itself (profile, up to 16 points, smooth transitions, clouds). `get_profile` reads a profile, `set_profile` writes one, in the same format:
 
 ```yaml
-action: juwel_helialux.set_profile
+action: helialux.set_profile
 target:
   entity_id: light.trigon_190_light
 data:
@@ -176,7 +176,7 @@ Not in the search yet? Then add it as a custom repository first: in the Marketpl
 ### Manual
 
 1. Download the [latest release](https://github.com/SH1FT-W/helialux/releases/latest).
-2. Copy the folder `custom_components/juwel_helialux` into `/config/custom_components/` and restart Home Assistant.
+2. Copy the folder `custom_components/helialux` into `/config/custom_components/` and restart Home Assistant.
 
 Requires Home Assistant 2026.9 or newer.
 
@@ -192,7 +192,7 @@ Requires Home Assistant 2026.9 or newer.
 
 Before creating the entry the integration queries the lamp; if it does not answer, "The lamp does not respond" appears. A new IP address can be entered later with **three dots > Reconfigure** (the name stays).
 
-**Discovery:** Home Assistant recognises the lamp on the network by its MAC address (prefix of JUWEL Aquarium) and offers it under **Discovered**; only the aquarium name is asked for. If the lamp gets a new IP address, the integration updates its entry by itself, also for entries taken over from MrSleeps' integration. An address entered as a host name is left as it is. Discovery needs Home Assistant to see the lamp's DHCP requests (same network). A router integration that tracks clients (for example UniFi) also works, but Home Assistant only reads it at start, so a new address is then picked up after the next restart. Otherwise set the lamp up by its IP address as above.
+**Discovery:** Home Assistant recognises the lamp on the network by its MAC address (prefix of JUWEL Aquarium) and offers it under **Discovered**; only the aquarium name is asked for. If the lamp gets a new IP address, the integration updates its entry by itself. An address entered as a host name is left as it is. Discovery needs Home Assistant to see the lamp's DHCP requests (same network). A router integration that tracks clients (for example UniFi) also works, but Home Assistant only reads it at start, so a new address is then picked up after the next restart. Otherwise set the lamp up by its IP address as above.
 
 ### Options
 
@@ -201,13 +201,19 @@ Before creating the entry the integration queries the lamp; if it does not answe
 | Poll every … seconds | 5 to 300, default 15 |
 | Weather for "clouds from weather" | Weather entity: the condition or cloud coverage sets the cloud strength, the wind the cloud motion. Written only on change and at most every 30 minutes |
 
-## Migration from MrSleeps' integration
+<a id="moving-over"></a>
+## Moving over
 
-1. In the Marketplace, remove "Juwel Helialux Smart Controller". Keep the integration entry.
-2. Install HeliaLux (see above) and restart Home Assistant.
-3. The existing entry is taken over: entity IDs, history, device and automations stay.
+From MrSleeps' integration, or from HeliaLux 26.11.2 and earlier (both used the domain `juwel_helialux`). Nothing is taken over automatically:
 
-Three entities of the old integration remain as "no longer provided" (`sensor.<name>_combined_sensor` and two duplicate `binary_sensor.<name>_manual_*`); they can be deleted.
+1. Note the aquarium name of the old entry (it sets the entity IDs, for example `light.trigon_190_light`).
+2. If used in HeliaLux: switch off **sun cycle** and **acclimatization**, so the original profile is written back to the lamp.
+3. **Settings > Devices & services**: delete the old entry.
+4. Remove the old integration: for MrSleeps' integration in the Marketplace. For HeliaLux 26.11.2 and earlier, delete the folder `/config/custom_components/juwel_helialux` by hand; updating in the Marketplace installs into the new folder `helialux` and leaves the old one in place. While it is there, HeliaLux refuses to set up a lamp and shows a repair notice. Restart Home Assistant.
+5. Install HeliaLux (see above) if not done yet, restart, and set the lamp up with the **same aquarium name**. The entities get the same entity IDs as before, so history, statistics and automations or dashboards that use entity IDs keep working.
+6. Actions are now called `helialux.set_channels`, `helialux.get_profile` and `helialux.set_profile`; rename `juwel_helialux.*` in your automations and scripts.
+
+Not carried over, because the device and entities are created new: device automations (device triggers, conditions and actions), area, custom names and icons, labels, voice assistant and HomeKit exposure, disabled entities and entity IDs you renamed by hand. Options (poll interval, weather), the colour simulation duration and other settings start at their defaults. Delete the old entry before setting up the new one: while it exists, Home Assistant gives the new entities a `_2` suffix. If that happened, delete the new entry as well and set it up again with the same aquarium name.
 
 ## Good to know
 
@@ -229,7 +235,7 @@ Three entities of the old integration remain as "no longer provided" (`sensor.<n
   ```yaml
   logger:
     logs:
-      custom_components.juwel_helialux: debug
+      custom_components.helialux: debug
   ```
 
 When you open an [issue](https://github.com/SH1FT-W/helialux/issues), please attach the diagnostics file.
@@ -238,7 +244,7 @@ When you open an [issue](https://github.com/SH1FT-W/helialux/issues), please att
 
 1. If used: switch off **sun cycle** and **acclimatization**, so Home Assistant writes the original profile back to the lamp. Switch off the manual colour simulation so the profile runs again.
 2. **Settings > Devices & services > Juwel HeliaLux > three dots > Delete.** The stored desired state is deleted with it.
-3. Delete the folder `/config/custom_components/juwel_helialux` (or remove the repository in the Marketplace) and restart Home Assistant.
+3. Delete the folder `/config/custom_components/helialux` (or remove the repository in the Marketplace) and restart Home Assistant.
 
 ## How it works
 
@@ -255,13 +261,13 @@ HeliaLux is a rewrite and contains no code from [MrSleeps' integration](https://
 ## Development
 
 ```bash
-python -m pytest -q -p no:logging --cov=custom_components/juwel_helialux   # fake lamp in tests/conftest.py
+python -m pytest -q -p no:logging --cov=custom_components/helialux   # fake lamp in tests/conftest.py
 uvx ruff check . && uvx ruff format --check .
 uvx mypy@2.3.1 --python-executable <venv>/bin/python
 python tools/pruefe-uebersetzungen.py    # strings.json against translations/*.json
 ```
 
-Install the test requirements with `pip install -r requirements_test.txt`. The tests run against a simulated lamp whose answers were recorded from a real one. The same checks run on GitHub Actions for every push and pull request, plus HACS validation and hassfest. Self-assessed state of the [Integration Quality Scale](https://developers.home-assistant.io/docs/core/integration-quality-scale/): [`quality_scale.yaml`](custom_components/juwel_helialux/quality_scale.yaml).
+Install the test requirements with `pip install -r requirements_test.txt`. The tests run against a simulated lamp whose answers were recorded from a real one. The same checks run on GitHub Actions for every push and pull request, plus HACS validation and hassfest. Self-assessed state of the [Integration Quality Scale](https://developers.home-assistant.io/docs/core/integration-quality-scale/): [`quality_scale.yaml`](custom_components/helialux/quality_scale.yaml).
 
 ## License
 

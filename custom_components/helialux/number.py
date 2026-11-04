@@ -50,7 +50,6 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: HeliaLuxConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
 ) -> None:
     coordinator = entry.runtime_data
-    # Die alte Integration hatte hier die entry_id statt des Tank-Namens in der unique_id.
     async_add_entities(HeliaLuxNumber(coordinator, d, f"{entry.entry_id}_{d.key}") for d in NUMBERS)
     async_add_entities(
         ChannelNumber(coordinator, index, color) for index, color in enumerate(CHANNELS[: coordinator.channels])

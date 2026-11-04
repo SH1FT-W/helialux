@@ -1,21 +1,24 @@
 # HeliaLux – Projektregeln
 
-HA-Integration (`custom_components/juwel_helialux`, Domain `juwel_helialux`) für die Juwel HeliaLux SmartControl,
-entwickelt und geprüft an einer Trigon 190 (der Test-Lampe, 4 Kanäle). Ersetzt die HACS-Integration
-MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component **mit gleicher Domain und gleichen unique_ids** – Einbau =
-Ordner tauschen, Entity-IDs, Verlauf, Gerät und Automationen bleiben. Kein Code von dort übernommen (Neubau, Dank in
-`NOTICE`).
+HA-Integration (`custom_components/helialux`, Domain `helialux`) für die Juwel HeliaLux SmartControl,
+entwickelt und geprüft an einer Trigon 190 (der Test-Lampe, 4 Kanäle). Alternative zur Marketplace-Integration
+MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component (Domain `juwel_helialux`). Bis 26.11.2 hatten wir deren
+Domain und übernahmen ihre Einträge; Frenck hat das im Marketplace-Review abgelehnt (hacs/default#13077), seit
+26.11.3 eigene Domain und **nichts mehr übernehmen** (keine fremden Einträge, Speicherdateien oder unique_ids).
+Das Update lässt den alten Ordner `juwel_helialux` liegen; `__init__.py` `_async_check_old_version` meldet das per
+Reparatur-Hinweis (nur unsere Altversion, erkannt am issue_tracker).
+Umstieg nur von Hand (README „Moving over“). Kein Code von dort übernommen (Neubau, Dank in `NOTICE`).
 
 - Repo ist **öffentlich**: nichts Persönliches ins Repo (keine Namen, echten IPs/MACs/Profilnamen, Heimnetz-Details,
   lokalen Pfade). Testdaten bleiben fiktiv (192.0.2.x, 02:00:00:00:00:01, Profile wie `My_Profile`).
 - README, CHANGELOG, Release-Notizen, Issue-Texte und Commit-Texte auf Englisch.
 - Lokal committen ok, Push und Releases nur nach Rückfrage.
 
-## Aufbau (`custom_components/juwel_helialux/`)
+## Aufbau (`custom_components/helialux/`)
 - `api.py` Lampe über HTTP (`*vars.js` lesen, `POST /stat`, `/week.html`, `/pedit`); eine Anfrage nach der anderen.
 - `coordinator.py` Abfrage, `desired` (Store) = was HA zuletzt wollte; hält den Zustand gegen Neustart/Ablauf der
   Lampe, übernimmt Änderungen aus App/Weboberfläche, Übergänge, Uhrabweichung → Reparatur-Hinweis.
-- `device.py` MAC-Hilfen, Migration alter Einträge (URL als unique_id → MAC), DHCP-Erkennung zieht neue IP nach.
+- `device.py` MAC-Hilfen: Einträge ohne MAC als unique_id (Lampe meldete beim Einrichten keine) bekommen sie, wenn eindeutig; DHCP-Erkennung zieht neue IP nach.
 - `weather.py` rein: Wolken nach echtem Wetter. `light.py`, `number.py`, `select.py` usw. Entitäten.
 - Logo: `brand/` (offizielle Juwel-Wortmarke von juwel-aquarium.de, Quelle `assets/*.svg`).
 
@@ -23,12 +26,13 @@ Ordner tauschen, Entity-IDs, Verlauf, Gerät und Automationen bleiben. Kein Code
 - **`setvars.js` nie lesen** (WLAN-Passwörter im Klartext).
 - Profile speichern immer mit `pedit` action 30 (dauerhaft); 31 ist nur der Zwischenstand des Editors.
 - Rückrufe von `async_call_later` immer `@callback`, sonst führt HA sie in einem Hilfs-Thread aus.
-- Migration setzt die MAC als unique_id nur, wenn eindeutig (genau eine MAC, kein anderer Eintrag damit).
-- `light.py` rgbw_color = absolute Kanalwerte wie in der alten Integration (Automationen schicken absolute Werte); nur
+- Die MAC wird nur dann unique_id, wenn eindeutig (genau eine MAC, kein anderer Eintrag damit).
+- `light.py` rgbw_color = absolute Kanalwerte wie bei MrSleeps (Automationen schicken absolute Werte); nur
   brightness skaliert die Mischung; turn_on ohne Werte = letzte Mischung (alt: 100 % Weiß).
 - Tagsimulation an der Lampe → HA gibt ab.
-- unique_ids: `<slug>_light|_white|…`, Zahlen `<entry_id>_<key>`, Select `<slug>_profile_select`. Nicht ändern.
-  Entity-IDs englisch wie alt (`entity.py` setzt sie für neue Entitäten).
+- unique_ids seit 26.11.3 alle `<entry_id>_<key>` (Licht `_light`, Select `_profile_select`), Geräte-Identifier
+  `(helialux, entry_id)`. Nicht ändern.
+  Entity-IDs englisch wie bei MrSleeps, damit der Umstieg von Hand Verlauf und Automationen behält (`entity.py` setzt sie für neue Entitäten).
 
 ## Version
 Versionen über `tools/next-version` (Regeln in der globalen CLAUDE.md); Tag + Release-Titel = genau die
@@ -36,7 +40,7 @@ manifest-Version. `CHANGELOG.md` `## YY.M.N – DD.MM.YYYY`, englisch. Die Versi
 Versionszeile der Projektseite (`docs/index.html`) lesen die manifest.json selbst.
 
 ## Prüfen
-- `LC_ALL=en_US.UTF-8 TZ=UTC ~/Software/recall/.venv/bin/python -m pytest -q -p no:logging --cov=custom_components/juwel_helialux`
+- `LC_ALL=en_US.UTF-8 TZ=UTC ~/Software/recall/.venv/bin/python -m pytest -q -p no:logging --cov=custom_components/helialux`
   (oder eine venv mit `requirements_test.txt`; nachgebaute Lampe in `tests/conftest.py`, Antworten von einer echten
   mitgeschnitten)
 - `uvx ruff@0.16.9 check . && uvx ruff@0.16.9 format --check .`, `uvx mypy@2.3.1 --python-executable <venv>/bin/python`

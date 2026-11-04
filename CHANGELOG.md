@@ -1,5 +1,18 @@
 # Changelog
 
+## 26.11.3 – 04.11.2026
+
+- **Own domain `helialux`** (was `juwel_helialux`, the domain of MrSleeps' integration). HeliaLux can now be
+  installed next to it and no longer takes over its entries, unique IDs or stored values.
+- **Breaking:** existing installations of HeliaLux are not moved over automatically. The update installs into the
+  new folder `custom_components/helialux` and leaves `custom_components/juwel_helialux` in place, so the old entry
+  keeps running: switch off sun cycle and acclimatization, delete the old entry, delete the old folder by hand,
+  restart and set the lamp up again with the same aquarium name. Entity IDs and history stay; device automations,
+  area, names and labels are set again. While the old version is still installed, setting up a lamp is refused and a repair notice explains the steps.
+- Actions are now `helialux.set_channels`, `helialux.get_profile` and `helialux.set_profile`.
+- unique_ids and the device identifier are based on the entry instead of the aquarium name, so two lamps with the
+  same name no longer collide. Steps in the README under "Moving over".
+
 ## 26.11.2 – 02.11.2026
 
 - **DHCP discovery:** Home Assistant recognises the lamp by its MAC address (prefix registered to JUWEL Aquarium)

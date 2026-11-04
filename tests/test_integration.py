@@ -15,10 +15,10 @@ from homeassistant.helpers import entity_registry as er, issue_registry as ir
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry, async_fire_time_changed
 
-from custom_components.juwel_helialux.const import DOMAIN
-from custom_components.juwel_helialux.diagnostics import async_get_config_entry_diagnostics
+from custom_components.helialux.const import DOMAIN
+from custom_components.helialux.diagnostics import async_get_config_entry_diagnostics
 
-from .conftest import ENTRY_ID, FakeLamp, old_entry
+from .conftest import ENTRY_ID, FakeLamp, make_entry
 
 LIGHT = "light.trigon_190_light"
 
@@ -34,21 +34,19 @@ async def turn_on(hass: HomeAssistant, **data) -> None:
     await hass.async_block_till_done()
 
 
-async def test_old_entry_keeps_entity_ids(hass: HomeAssistant, setup, lamp: FakeLamp):
-    """Gleiche unique_ids wie die alte Integration → Automationen und Verlauf bleiben."""
+async def test_entity_ids(hass: HomeAssistant, setup, lamp: FakeLamp):
+    """Entity IDs from the tank name (the same ones MrSleeps' integration used), unique_ids from the entry."""
     reg = er.async_get(hass)
     for entity_id, uid in (
-        (LIGHT, "trigon_190_light"),
-        ("switch.trigon_190_manual_color_simulation", "trigon_190_manual_color_simulation"),
+        (LIGHT, f"{ENTRY_ID}_light"),
+        ("switch.trigon_190_manual_color_simulation", f"{ENTRY_ID}_manual_color_simulation"),
         ("number.trigon_190_manual_color_simulation_duration", f"{ENTRY_ID}_manual_color_simulation_duration"),
-        ("select.trigon_190_profil", "trigon_190_profile_select"),
-        ("sensor.trigon_190_white", "trigon_190_white"),
+        ("select.trigon_190_profil", f"{ENTRY_ID}_profile_select"),
+        ("sensor.trigon_190_white", f"{ENTRY_ID}_white"),
     ):
         platform = entity_id.split(".")[0]
         assert reg.async_get_entity_id(platform, DOMAIN, uid), (entity_id, uid)
-    assert setup.minor_version == 3
     assert setup.options == {"scan_interval": 15}
-    assert "update_interval" not in setup.data
     state = hass.states.get(LIGHT)
     assert state.state == STATE_ON
     assert state.attributes["rgbw_color"] == (204, 140, 153, 255)
@@ -273,7 +271,7 @@ async def test_options_and_reconfigure(hass: HomeAssistant, setup, lamp: FakeLam
 
 
 async def test_reconfigure_other_lamp_aborts(hass: HomeAssistant, setup, lamp: FakeLamp):
-    """Old entry (URL as unique_id): the MAC of its device decides, another lamp cannot take it over."""
+    """Entry without MAC unique_id: the MAC of its device decides, another lamp cannot take it over."""
     lamp.mac = "02:00:00:00:00:02"
     result = await setup.start_reconfigure_flow(hass)
     result = await hass.config_entries.flow.async_configure(
@@ -282,7 +280,7 @@ async def test_reconfigure_other_lamp_aborts(hass: HomeAssistant, setup, lamp: F
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "unique_id_mismatch"
     assert setup.data["tank_host"] == "192.0.2.10"
-    assert setup.unique_id == "http://192.0.2.10"
+    assert setup.unique_id is None
     lamp.mac = None  # a lamp without MAC cannot prove it is the same one
     result = await setup.start_reconfigure_flow(hass)
     result = await hass.config_entries.flow.async_configure(
@@ -292,8 +290,8 @@ async def test_reconfigure_other_lamp_aborts(hass: HomeAssistant, setup, lamp: F
     assert setup.data["tank_host"] == "192.0.2.10"
 
 
-async def test_reconfigure_same_lamp_keeps_old_unique_id(hass: HomeAssistant, setup, lamp: FakeLamp):
-    """Same lamp under a new IP: allowed, the old URL unique_id stays as it is."""
+async def test_reconfigure_same_lamp_keeps_unique_id(hass: HomeAssistant, setup, lamp: FakeLamp):
+    """Same lamp under a new IP: allowed, the unique_id stays as it is."""
     lamp.mac = "02-00-00-00-00-01"  # spelling of the MAC does not matter
     result = await setup.start_reconfigure_flow(hass)
     result = await hass.config_entries.flow.async_configure(
@@ -301,15 +299,13 @@ async def test_reconfigure_same_lamp_keeps_old_unique_id(hass: HomeAssistant, se
     )
     assert result["reason"] == "reconfigure_successful"
     assert setup.data["tank_host"] == "192.0.2.20"
-    assert setup.unique_id == "http://192.0.2.10"
+    assert setup.unique_id is None
 
 
 async def test_reconfigure_mac_entry(hass: HomeAssistant, lamp: FakeLamp):
-    """Entry created by this integration (MAC as unique_id): only the same lamp may replace the address."""
+    """Entry with MAC as unique_id: only the same lamp may replace the address."""
     entry = MockConfigEntry(
         domain=DOMAIN,
-        version=2,
-        minor_version=2,
         unique_id="02:00:00:00:00:01",
         data={"tank_host": "192.0.2.10", "tank_name": "Trigon 190", "tank_protocol": "http"},
         options={"scan_interval": 15},
@@ -342,9 +338,9 @@ async def test_reconfigure_mac_entry(hass: HomeAssistant, lamp: FakeLamp):
 
 
 async def test_reconfigure_without_known_mac(hass: HomeAssistant, lamp: FakeLamp):
-    """Old entry whose lamp never reported a MAC: nothing to compare, the new address is taken as before."""
+    """Entry whose lamp never reported a MAC: nothing to compare, the new address is taken."""
     lamp.mac = None
-    entry = old_entry()
+    entry = make_entry()
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
@@ -660,7 +656,7 @@ async def test_clouds_from_weather(hass: HomeAssistant, setup, lamp: FakeLamp, f
 async def test_transition_steps_fail_quietly(hass: HomeAssistant, setup, lamp: FakeLamp, freezer):
     """Ein gescheiterter Schritt wird übersprungen; scheitert auch der Zielwert, gibt es eine Warnung."""
     await turn_on(hass, rgbw_color=[0, 0, 0, 0])
-    with patch("custom_components.juwel_helialux.coordinator._LOGGER.warning") as warning:
+    with patch("custom_components.helialux.coordinator._LOGGER.warning") as warning:
         await turn_on(hass, rgbw_color=[255, 0, 0, 255], transition=20)  # 10 Schritte à 2 s
         first = list(lamp.levels)
         lamp.fail_next = 2  # ein Schritt (Schreiben + Wiederholung) geht verloren
@@ -722,7 +718,7 @@ async def test_weather_and_nightly_failures_only_warn(hass: HomeAssistant, setup
     )
     await hass.async_block_till_done()
     assert max(p["cI"]) == 0
-    with patch("custom_components.juwel_helialux.coordinator._LOGGER.warning") as warning:
+    with patch("custom_components.helialux.coordinator._LOGGER.warning") as warning:
         await tick(hass, freezer, 31 * 60)
         lamp.fail_next = 1  # das Lesen des Profils scheitert
         hass.states.async_set("weather.wetterstation", "cloudy", {"wind_speed": 15, "wind_speed_unit": "km/h"})

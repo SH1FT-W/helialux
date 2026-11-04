@@ -1,7 +1,7 @@
 set_channels:
   target:
     entity:
-      integration: juwel_helialux
+      integration: helialux
       domain: light
   fields:
     white:
@@ -23,7 +23,7 @@ set_channels:
 get_profile:
   target:
     entity:
-      integration: juwel_helialux
+      integration: helialux
       domain: light
   fields:
     profile:
@@ -34,7 +34,7 @@ get_profile:
 set_profile:
   target:
     entity:
-      integration: juwel_helialux
+      integration: helialux
       domain: light
   fields:
     profile:

@@ -1,15 +1,14 @@
-"""Juwel HeliaLux SmartControl – eigene Integration (Ersatz für MrSleeps/juwel_helialux)."""
+"""Juwel HeliaLux SmartControl."""
 
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, SupportsResponse
-from homeassistant.helpers import config_validation as cv, service
+from homeassistant.helpers import config_validation as cv, issue_registry as ir, service
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.typing import ConfigType
@@ -17,19 +16,16 @@ import voluptuous as vol
 
 from .api import PROFILE_NAME_RE, HeliaLuxClient
 from .const import (
-    CONF_SCAN_INTERVAL,
     CONF_TANK_HOST,
     CONF_TANK_PROTOCOL,
-    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_PROFILE_NAME,
     MAX_PROFILE_POINTS,
+    OLD_VERSION_ISSUE,
     STORAGE_VERSION,
 )
 from .coordinator import HeliaLuxCoordinator
-from .device import mac_unique_id
-
-_LOGGER = logging.getLogger(__name__)
+from .old_version import MOVING_OVER_URL, async_old_version_installed
 
 PLATFORMS = [
     Platform.BINARY_SENSOR,
@@ -106,7 +102,24 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         },
         func="async_set_profile",
     )
+    await _async_check_old_version(hass)
     return True
+
+
+async def _async_check_old_version(hass: HomeAssistant) -> None:
+    """Repair notice while the old version is still installed (the flows refuse new entries then)."""
+    if await async_old_version_installed(hass):
+        ir.async_create_issue(
+            hass,
+            DOMAIN,
+            OLD_VERSION_ISSUE,
+            is_fixable=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key=OLD_VERSION_ISSUE,
+            learn_more_url=MOVING_OVER_URL,
+        )
+    else:
+        ir.async_delete_issue(hass, DOMAIN, OLD_VERSION_ISSUE)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: HeliaLuxConfigEntry) -> bool:
@@ -125,32 +138,5 @@ async def async_unload_entry(hass: HomeAssistant, entry: HeliaLuxConfigEntry) ->
 
 
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Beim Löschen auch den gespeicherten Wunschzustand entfernen (.storage/juwel_helialux.<entry_id>)."""
+    """Beim Löschen auch den gespeicherten Wunschzustand entfernen (.storage/helialux.<entry_id>)."""
     await Store[dict[str, Any]](hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}").async_remove()
-
-
-async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Einträge der alten Integration übernehmen (Version 2.1 → 2.2), dann URL → MAC als unique_id (2.3).
-
-    Die alte Integration speicherte ein Abfrageintervall in Minuten (das sie dann ignorierte) und
-    kopierte Host/Name zusätzlich in die Optionen. Übrig bleibt: Host/Name/Protokoll in `data`,
-    Abfrageintervall in Sekunden in `options`.
-    """
-    if entry.version > 2:
-        return False
-    if entry.version == 2 and entry.minor_version < 2:
-        data = {**entry.data, **{k: v for k, v in entry.options.items() if k in (CONF_TANK_HOST, CONF_TANK_PROTOCOL)}}
-        data.pop("update_interval", None)
-        hass.config_entries.async_update_entry(
-            entry, data=data, options={CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL}, minor_version=2
-        )
-        _LOGGER.info("Eintrag %s übernommen", entry.title)
-    if entry.version == 2 and entry.minor_version < 3:
-        # The MAC lets DHCP discovery recognise the lamp; entity unique_ids do not change.
-        # Without a safe MAC (see device.mac_unique_id) the URL stays and discovery finds
-        # the entry through its device instead.
-        mac = mac_unique_id(hass, entry)
-        hass.config_entries.async_update_entry(entry, unique_id=mac or entry.unique_id, minor_version=3)
-        if mac:
-            _LOGGER.info("Entry %s now uses the lamp's MAC as unique_id", entry.title)
-    return True

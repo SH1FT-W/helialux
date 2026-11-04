@@ -53,4 +53,4 @@ body:
     id: context
     attributes:
       label: Anything else
-      description: Debug log lines (logger custom_components.juwel_helialux set to debug), whether the Juwel app or the lamp's web interface was open, whether the lamp has internet access for its clock.
+      description: Debug log lines (logger custom_components.helialux set to debug), whether the Juwel app or the lamp's web interface was open, whether the lamp has internet access for its clock.

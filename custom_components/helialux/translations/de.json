@@ -34,7 +34,8 @@
       "already_in_progress": "Diese Lampe wird gerade schon eingerichtet.",
       "cannot_connect": "Die Lampe antwortet nicht. Stimmt die Adresse, ist sie im WLAN?",
       "reconfigure_successful": "Adresse geändert.",
-      "unique_id_mismatch": "Unter dieser Adresse antwortet eine andere Lampe. Bitte die Adresse der Lampe eintragen, die zu diesem Eintrag gehört."
+      "unique_id_mismatch": "Unter dieser Adresse antwortet eine andere Lampe. Bitte die Adresse der Lampe eintragen, die zu diesem Eintrag gehört.",
+      "old_version_installed": "HeliaLux 26.11.2 oder älter ist noch installiert (Ordner `/config/custom_components/juwel_helialux`). Bitte erst entfernen, damit nicht zwei Integrationen dieselbe Lampe steuern: {url}"
     }
   },
   "options": {
@@ -226,6 +227,10 @@
     "clock_drift": {
       "title": "Uhr von {name} geht falsch",
       "description": "Die Uhr der Lampe weicht um {minutes} Minuten ab (positiv = geht vor). Solange Home Assistant die Farbe steuert, ist das egal. Läuft aber das Profil der Lampe, dann laufen Sonnenauf- und -untergang zur falschen Zeit.\n\nDie Lampe stellt ihre Uhr per NTP (ptbtime1.ptb.de). Wahrscheinlich blockiert die Firewall NTP (UDP 123) aus dem Netz der Lampe. Sobald die Abweichung unter 5 Minuten liegt, verschwindet dieser Hinweis von selbst."
+    },
+    "old_version_installed": {
+      "title": "Alte HeliaLux-Version noch installiert",
+      "description": "HeliaLux 26.11.2 oder älter (Domain `juwel_helialux`) liegt noch in `/config/custom_components/juwel_helialux`. Das Update im Marketplace entfernt diesen Ordner nicht, also läuft der alte Eintrag weiter und beide Integrationen steuern dieselbe Lampe.\n\n1. Beim alten Eintrag Sonnenverlauf und Eingewöhnung ausschalten.\n2. Den alten Eintrag unter Einstellungen > Geräte & Dienste löschen.\n3. Den Ordner `/config/custom_components/juwel_helialux` löschen und Home Assistant neu starten.\n4. Wurde der neue Eintrag schon eingerichtet, während der alte lief, enden seine Entitäten auf `_2`: dann auch den neuen Eintrag löschen und mit demselben Aquariennamen neu einrichten.\n\nNach dem Neustart verschwindet dieser Hinweis."
     }
   },
   "services": {

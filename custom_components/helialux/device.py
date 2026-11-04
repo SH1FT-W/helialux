@@ -1,4 +1,4 @@
-"""MAC helpers shared by the config flow and the entry migration."""
+"""MAC helpers for the config flow."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ _MAC = re.compile(r"[0-9a-f]{2}(:[0-9a-f]{2}){5}")  # as written by format_mac
 
 
 def is_mac(value: str | None) -> bool:
-    """New entries use the MAC as unique_id, entries of the old integration the lamp URL."""
+    """Entries use the lamp's MAC as unique_id; a lamp that reported no MAC at setup leaves it empty."""
     return value is not None and _MAC.fullmatch(value) is not None
 
 
@@ -40,7 +40,7 @@ def device_macs(hass: HomeAssistant, entry_id: str) -> set[str]:
 
 
 def mac_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> str | None:
-    """MAC to replace the URL unique_id of an old entry with, or None if that is not safe.
+    """MAC to give an entry without MAC unique_id, or None if that is not safe.
 
     Safe means: the entry's device reported exactly one MAC (the lamp itself sent it, see
     entity.device_info), its connections are not unreconciled copies from a split composite

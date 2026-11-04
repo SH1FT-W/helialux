@@ -32,7 +32,7 @@ rules:
     comment: CoordinatorEntity meldet sich selbst an und ab; Wetter- und Zeit-Rückrufe hängen an async_on_unload.
   entity-unique-id:
     status: done
-    comment: unique_ids der alten Integration (MrSleeps/juwel_helialux) unverändert übernommen.
+    comment: unique_ids aus der entry_id, je Eintrag eindeutig.
   has-entity-name: done
   runtime-data: done
   test-before-configure: done
@@ -73,13 +73,13 @@ rules:
   discovery-update-info:
     status: done
     comment: >-
-      DHCP-Erkennung trägt eine neue IP in den bestehenden Eintrag ein und lädt ihn neu; alte Einträge (URL als
-      unique_id) werden über die MAC ihres Geräts gefunden. Als Hostname eingetragene Adressen bleiben.
+      DHCP-Erkennung trägt eine neue IP in den bestehenden Eintrag ein und lädt ihn neu; Einträge ohne MAC als
+      unique_id werden über die MAC ihres Geräts gefunden. Als Hostname eingetragene Adressen bleiben.
   discovery:
     status: done
     comment: >-
       DHCP über das MAC-Präfix A8:E5:52 (IEEE: JUWEL Aquarium) und registered_devices; mDNS/SSDP kündigt die
-      Lampe nicht an. Alte Einträge mit URL als unique_id wechseln auf die MAC, wenn sie eindeutig ist.
+      Lampe nicht an. Einträge ohne MAC als unique_id übernehmen sie, wenn sie eindeutig ist.
   docs-data-update: done
   docs-examples: done
   docs-known-limitations: done
@@ -95,7 +95,7 @@ rules:
   entity-disabled-by-default:
     status: exempt
     comment: >-
-      Die Entitäten stammen aus der alten Integration und werden in Dashboards genutzt; nichts ist laut oder
+      Alle Entitäten werden in Dashboards genutzt; nichts ist laut oder
       teuer abzufragen (alles kommt aus derselben Abfrage).
   entity-translations: done
   exception-translations: done
