@@ -274,7 +274,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
       <a class="btn ghost" href="https://github.com/SH1FT-W/helialux#readme"><span class="en">Read the README</span><span class="de">Zur Anleitung</span></a>
     </div>
     <p class="meta reveal d3">
-      <span class="pill"><i></i><span id="hl-version">Version 26.10.2</span></span>
+      <span class="pill"><i></i><span id="hl-version">Version 26.11.3</span></span>
       <span class="en">Home Assistant 2026.9 or newer &middot; English and German &middot; Apache 2.0</span><span class="de">Home Assistant 2026.9 oder neuer &middot; Deutsch und Englisch &middot; Apache 2.0</span>
     </p>
 
@@ -291,15 +291,12 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   <div class="wrap">
     <div class="head center reveal">
       <p class="eyebrow"><span class="en">Just arrived</span><span class="de">Gerade neu</span></p>
-      <h2><span class="en">Steadier profiles,<br>quieter logs.</span><span class="de">Verlässlichere Profile,<br>ruhigeres Log.</span></h2>
-      <p class="lead"><span class="en">The latest releases make the integration tougher against odd answers from the lamp and more careful with your profiles.</span><span class="de">Die letzten Releases machen die Integration robuster gegen seltsame Antworten der Lampe und vorsichtiger mit deinen Profilen.</span></p>
+      <h2><span class="en">Its own domain,<br>found by itself.</span><span class="de">Eigene Domain,<br>findet sich selbst.</span></h2>
     </div>
     <div class="bento">
-      <div class="b s6 reveal"><span class="tag">26.10.2</span><h3><span class="en">True to the profile</span><span class="de">Treu zum Profil</span></h3><p><span class="en">Before the first point of a profile the value of that point applies, exactly as on the lamp, instead of a wrongly extrapolated one.</span><span class="de">Vor dem ersten Punkt eines Profils gilt der Wert dieses Punkts, genau wie an der Lampe, statt eines falsch hochgerechneten.</span></p></div>
-      <div class="b s6 reveal d1"><span class="tag">26.10.2</span><h3><span class="en">Safe profile names</span><span class="de">Sichere Profilnamen</span></h3><p><span class="en">Names with characters the lamp cannot store are rejected before saving, so a profile on the lamp is never mangled.</span><span class="de">Namen mit Zeichen, die die Lampe nicht speichern kann, werden vor dem Speichern abgelehnt, ein Profil in der Lampe geht so nie kaputt.</span></p></div>
-      <div class="b s4 reveal"><span class="tag">26.10.2</span><h3><span class="en">Wind in any unit</span><span class="de">Wind in jeder Einheit</span></h3><p><span class="en">Clouds from weather convert knots and feet per second correctly.</span><span class="de">Wolken nach Wetter rechnen Knoten und Fuß pro Sekunde richtig um.</span></p></div>
-      <div class="b s4 reveal d1"><span class="tag">26.10.2</span><h3><span class="en">One run, not two</span><span class="de">Ein Lauf, nicht zwei</span></h3><p><span class="en">Holding the state starts only once, even for two polls in quick succession.</span><span class="de">Das Halten des Zustands startet nur einmal, auch bei zwei Abfragen kurz hintereinander.</span></p></div>
-      <div class="b s4 reveal d2"><span class="tag">26.10.1</span><h3><span class="en">Calendar versions</span><span class="de">Kalender-Versionen</span></h3><p><span class="en">Releases count year.month.number: <code>26.10.2</code> is the second release of October 2026.</span><span class="de">Releases zählen Jahr.Monat.Nummer: <code>26.10.2</code> ist das zweite Release im Oktober 2026.</span></p></div>
+      <div class="b s4 reveal"><span class="tag">26.11.3</span><h3><span class="en">Its own domain</span><span class="de">Eigene Domain</span></h3><p><span class="en"><code>helialux</code> runs next to MrSleeps' integration. Moving over is done by hand and keeps entity IDs and history.</span><span class="de"><code>helialux</code> läuft neben der Integration von MrSleeps. Der Umstieg geht von Hand und behält Entity-IDs und Verlauf.</span></p></div>
+      <div class="b s4 reveal d1"><span class="tag">26.11.2</span><h3><span class="en">Found on the network</span><span class="de">Im Netz gefunden</span></h3><p><span class="en">Home Assistant recognises the lamp by its MAC address and only asks for the aquarium name.</span><span class="de">Home Assistant erkennt die Lampe an ihrer MAC-Adresse und fragt nur nach dem Aquariennamen.</span></p></div>
+      <div class="b s4 reveal d2"><span class="tag">26.11.2</span><h3><span class="en">Follows a new IP</span><span class="de">Folgt einer neuen IP</span></h3><p><span class="en">When the lamp shows up under a new address, its entry is updated by itself.</span><span class="de">Taucht die Lampe unter einer neuen Adresse auf, wird ihr Eintrag von selbst angepasst.</span></p></div>
     </div>
     <p class="cap reveal"><span class="en">Everything that changed, release by release: the <a href="https://github.com/SH1FT-W/helialux/blob/main/CHANGELOG.md">changelog</a>.</span><span class="de">Alles, was sich geändert hat, Release für Release: das <a href="https://github.com/SH1FT-W/helialux/blob/main/CHANGELOG.md">Changelog</a>.</span></p>
   </div>
@@ -323,16 +320,36 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   </div>
 </section>
 
-<section id="profiles" class="tint">
+<section id="where" class="tint">
+  <div class="wrap">
+    <div class="head center reveal">
+      <p class="eyebrow"><span class="en">What runs on the lamp</span><span class="de">Was auf der Lampe läuft</span></p>
+      <h2><span class="en">The lamp plays its profile.<br>Home Assistant writes it.</span><span class="de">Die Lampe spielt ihr Profil.<br>Home Assistant schreibt es.</span></h2>
+      <p class="lead"><span class="en">Or it takes over with a manual colour. What keeps running when Home Assistant is down:</span><span class="de">Oder übernimmt mit einer manuellen Farbe. Was weiterläuft, wenn Home Assistant aus ist:</span></p>
+    </div>
+    <div class="reveal">
+      <table class="tbl">
+        <thead><tr><th></th><th><span class="en">Where it lives</span><span class="de">Wo es liegt</span></th><th><span class="en">Without Home Assistant</span><span class="de">Ohne Home Assistant</span></th></tr></thead>
+        <tbody>
+          <tr><td><span class="en">Profile with up to 16 points, weekly plan</span><span class="de">Profil mit bis zu 16 Punkten, Wochenplan</span></td><td><span class="en">Saved in the lamp</span><span class="de">In der Lampe gespeichert</span></td><td><span class="en">Keeps running</span><span class="de">Läuft weiter</span></td></tr>
+          <tr><td><span class="en">Clouds and cloud window</span><span class="de">Wolken und Wolken-Fenster</span></td><td><span class="en">Written into the active profile</span><span class="de">Ins aktive Profil geschrieben</span></td><td><span class="en">Keeps running</span><span class="de">Läuft weiter</span></td></tr>
+          <tr><td><span class="en">Sun cycle and acclimatization</span><span class="de">Sonnenverlauf und Eingewöhnung</span></td><td><span class="en">Active profile recalculated every night at 03:05</span><span class="de">Aktives Profil jede Nacht um 03:05 neu gerechnet</span></td><td><span class="en">Last night's profile keeps running</span><span class="de">Das Profil der letzten Nacht läuft weiter</span></td></tr>
+          <tr><td><span class="en">Clouds from weather</span><span class="de">Wolken nach Wetter</span></td><td><span class="en">Active profile, on change and at most every 30 minutes</span><span class="de">Aktives Profil, bei Änderung und höchstens alle 30 Minuten</span></td><td><span class="en">Last clouds stay</span><span class="de">Die letzten Wolken bleiben</span></td></tr>
+          <tr><td><span class="en">Manual colour, sliders, transitions</span><span class="de">Manuelle Farbe, Regler, Übergänge</span></td><td><span class="en">The lamp's colour simulation, held by Home Assistant</span><span class="de">Farbsimulation der Lampe, von Home Assistant gehalten</span></td><td><span class="en">Runs out, then the profile takes over</span><span class="de">Läuft ab, dann übernimmt das Profil</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="profiles">
   <div class="wrap split">
     <div class="reveal">
       <p class="eyebrow"><span class="en">Profiles</span><span class="de">Profile</span></p>
       <h2><span class="en">The whole day.<br>Written from Home Assistant.</span><span class="de">Der ganze Tag.<br>Aus Home Assistant geschrieben.</span></h2>
       <ul class="points">
         <li><b><span class="en">Read and write</span><span class="de">Lesen und schreiben</span></b><span><span class="en"><code>get_profile</code> and <code>set_profile</code> with up to 16 points, saved permanently in the lamp.</span><span class="de"><code>get_profile</code> und <code>set_profile</code> mit bis zu 16 Punkten, dauerhaft in der Lampe gespeichert.</span></span></li>
-        <li><b><span class="en">Weekly schedule</span><span class="de">Wochenplan</span></b><span><span class="en">One profile for all days or one per weekday, Monday to Sunday.</span><span class="de">Ein Profil für alle Tage oder eines je Wochentag, Montag bis Sonntag.</span></span></li>
         <li><b><span class="en">Curve as data</span><span class="de">Verlauf als Daten</span></b><span><span class="en">Points per channel, clouds and what the profile would show right now, for charts in dashboards.</span><span class="de">Punkte je Kanal, Wolken und was das Profil gerade zeigen würde, für Diagramme in Dashboards.</span></span></li>
-        <li><b><span class="en">Acclimatization</span><span class="de">Eingewöhnung</span></b><span><span class="en">A new tank starts dimmed and reaches full brightness after 1 to 12 weeks.</span><span class="de">Ein neues Becken startet gedimmt und erreicht nach 1 bis 12 Wochen volle Helligkeit.</span></span></li>
       </ul>
     </div>
     <div class="prof reveal d1" role="img" aria-label="Illustration of a daily light profile with four channel curves, made-up values.">
@@ -349,7 +366,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   </div>
 </section>
 
-<section id="entities">
+<section id="entities" class="tint">
   <div class="wrap">
     <div class="head center reveal">
       <p class="eyebrow"><span class="en">Entities</span><span class="de">Entitäten</span></p>
@@ -375,7 +392,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   </div>
 </section>
 
-<section id="how" class="tint">
+<section id="how">
   <div class="wrap">
     <div class="head center reveal">
       <p class="eyebrow"><span class="en">How it works</span><span class="de">Wie es funktioniert</span></p>
@@ -391,7 +408,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   </div>
 </section>
 
-<section id="install">
+<section id="install" class="tint">
   <div class="wrap">
     <div class="head center reveal">
       <p class="eyebrow"><span class="en">Install</span><span class="de">Installation</span></p>
@@ -444,7 +461,7 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
   </div>
 </section>
 
-<section id="faq" class="tint">
+<section id="faq">
   <div class="wrap narrow">
     <div class="head center reveal">
       <p class="eyebrow"><span class="en">Good to know</span><span class="de">Gut zu wissen</span></p>
@@ -453,8 +470,6 @@ footer .fine { flex-basis: 100%; line-height: 1.6; }
     <div class="faq reveal">
       <details open><summary><span class="en">Why does the colour jump back?</span><span class="de">Warum springt die Farbe zurück?</span></summary><p><span class="en">Usually the lamp's web interface is still open in a browser. While it is open, it sends its own slider values every second and overwrites Home Assistant.</span><span class="de">Meist ist die Weboberfläche der Lampe noch im Browser offen. Solange sie offen ist, schickt sie jede Sekunde ihre eigenen Reglerwerte und überschreibt Home Assistant.</span></p></details>
       <details><summary><span class="en">Why does the profile run at the wrong time?</span><span class="de">Warum läuft das Profil zur falschen Zeit?</span></summary><p><span class="en">The lamp sets its clock by NTP. Without internet access UDP 123 has to be allowed outwards. From 10 minutes off, a repair issue appears.</span><span class="de">Die Lampe stellt ihre Uhr per NTP. Ohne Internetzugang muss UDP 123 nach außen erlaubt sein. Ab 10 Minuten Abweichung erscheint ein Reparatur-Hinweis.</span></p></details>
-      <details><summary><span class="en">Why does a change in the app take a moment?</span><span class="de">Warum dauert eine Änderung in der App einen Moment?</span></summary><p><span class="en">The state is polled every 15 seconds (5 to 300 in the options). The lamp only handles one request at a time, so all commands run one after the other.</span><span class="de">Der Zustand wird alle 15 Sekunden abgefragt (5 bis 300 in den Optionen). Die Lampe verträgt nur eine Anfrage gleichzeitig, alle Befehle laufen nacheinander.</span></p></details>
-      <details><summary><span class="en">What happens to my profile with the sun cycle?</span><span class="de">Was passiert mit meinem Profil beim Sonnenverlauf?</span></summary><p><span class="en">Sun cycle and acclimatization recalculate the active profile every night at 03:05. Home Assistant keeps the original and writes it back when both are switched off.</span><span class="de">Sonnenverlauf und Eingewöhnung rechnen das aktive Profil jede Nacht um 03:05 neu. Home Assistant merkt sich das Original und schreibt es zurück, wenn beide aus sind.</span></p></details>
       <details><summary><span class="en">All entities are unavailable. What now?</span><span class="de">Alle Entitäten sind nicht verfügbar. Was nun?</span></summary><p><span class="en">The lamp did not answer three times in a row. Check its IP address in your router and enter it with Reconfigure. Single lost requests are bridged.</span><span class="de">Die Lampe hat dreimal hintereinander nicht geantwortet. IP-Adresse im Router prüfen und über Neu konfigurieren eintragen. Einzelne verschluckte Anfragen werden überbrückt.</span></p></details>
       <details><summary><span class="en">Is it discovered automatically?</span><span class="de">Wird sie automatisch gefunden?</span></summary><p><span class="en">Yes, by its MAC address, if Home Assistant sees the lamp's DHCP requests or a router integration such as UniFi tracks it. A new IP address is then picked up by itself (via a router integration after the next restart). Otherwise set it up by its IP address; one lamp per entry.</span><span class="de">Ja, an der MAC-Adresse, wenn Home Assistant die DHCP-Anfragen der Lampe sieht oder eine Router-Integration wie UniFi sie verfolgt. Eine neue IP-Adresse übernimmt sie dann selbst (über eine Router-Integration nach dem nächsten Neustart). Sonst per IP-Adresse einrichten; eine Lampe je Eintrag.</span></p></details>
       <details><summary><span class="en">How do I report a bug?</span><span class="de">Wie melde ich einen Fehler?</span></summary><p><span class="en">Download the diagnostics (Settings, Devices &amp; services, Juwel HeliaLux, three dots) and attach them to a <a href="https://github.com/SH1FT-W/helialux/issues">GitHub issue</a>. IP address and MAC address are left out.</span><span class="de">Diagnose herunterladen (Einstellungen, Geräte &amp; Dienste, Juwel HeliaLux, drei Punkte) und an ein <a href="https://github.com/SH1FT-W/helialux/issues">GitHub-Issue</a> hängen. IP- und MAC-Adresse sind nicht enthalten.</span></p></details>
