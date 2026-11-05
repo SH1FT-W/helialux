@@ -1,5 +1,9 @@
 # Changelog
 
+## 26.11.4 – 05.11.2026
+
+- README and project page: new layout, shorter and easier to scan, with one table at the core.
+
 ## 26.11.3 – 04.11.2026
 
 - **Own domain `helialux`** (was `juwel_helialux`, the domain of MrSleeps' integration). HeliaLux can now be
