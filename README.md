@@ -2,14 +2,14 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-title-dark.webp" />
-  <img src="docs/images/readme-title-light.webp" alt="HeliaLux: Your aquarium light, fully local." />
+  <img src="docs/images/readme-title-light.webp" alt="HeliaLux: The Juwel HeliaLux SmartControl, fully local. Local, no cloud. Every channel as a slider. Clouds and sun cycle." />
 </picture>
 
 [![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FSH1FT-W%2Fhelialux%2Fmain%2Fcustom_components%2Fhelialux%2Fmanifest.json&query=%24.version&label=version&style=flat-square&color=003A5D&labelColor=111111)](https://github.com/SH1FT-W/helialux/releases/latest)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2026.9%2B-003A5D?style=flat-square&labelColor=111111&logo=homeassistant&logoColor=white)](https://www.home-assistant.io)
 [![Marketplace](https://img.shields.io/badge/Marketplace-default-003A5D?style=flat-square&labelColor=111111)](https://hacs.xyz)
 
-<a href="https://sh1ft-w.github.io/helialux"><b>Website</b></a>&emsp;<a href="#install">Install</a>&emsp;<a href="#set-up">Set up</a>&emsp;<a href="#entities">Entities</a>&emsp;<a href="#moving-over">Moving over</a>&emsp;<a href="CHANGELOG.md">Changelog</a>
+<a href="https://sh1ft-w.github.io/helialux"><b>Website</b></a>&emsp;<a href="#get-started">Get started</a>&emsp;<a href="#entities">Entities</a>&emsp;<a href="#moving-over">Moving over</a>&emsp;<a href="CHANGELOG.md">Changelog</a>
 
 </div>
 
@@ -19,7 +19,7 @@ Your Juwel aquarium light in Home Assistant: **every channel as a slider, real t
 
 It needs a **HeliaLux SmartControl**; Juwel lamps without it have no web server and do not work. HeliaLux has its own domain `helialux` and runs next to [MrSleeps' Juwel HeliaLux integration](https://github.com/MrSleeps/Juwel-HeliaLux-Home-Assistant-Custom-Component). Nothing is taken over automatically, [moving over](#moving-over) keeps your entity IDs and history.
 
-## What runs on the lamp
+## What you get
 
 The lamp plays its own profile. Home Assistant writes that profile, or takes over with a manual colour.
 
@@ -33,12 +33,19 @@ The lamp plays its own profile. Home Assistant writes that profile, or takes ove
 
 **New in 26.11:** its own domain next to MrSleeps' integration, and the lamp is discovered on the network and follows a new IP address by itself. Every change is in the [changelog](CHANGELOG.md).
 
-<a id="install"></a>
-## Install
+<a id="get-started"></a><a id="install"></a><a id="set-up"></a>
+## Get started
 
 [![Open in the Marketplace](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=SH1FT-W&repository=helialux&category=integration)
 
-Search for **Juwel HeliaLux** under **Settings > Marketplace** (called HACS before Home Assistant 2026.11), pick the one **by SH1FT-W**, download it and restart Home Assistant.
+Before you start, reserve a fixed IP address for the lamp in your router and let it reach its time server (`ptbtime1.ptb.de`, UDP 123 outwards). Without the time, the profile runs at the wrong hour.
+
+1. **Install it.** Search for **Juwel HeliaLux** under **Settings > Marketplace** (called HACS before Home Assistant 2026.11), pick the one **by SH1FT-W**, download it and restart Home Assistant.
+2. **Add the lamp.** It usually shows up under **Settings > Devices & services > Discovered**, recognised by its MAC address. If not, choose **Add integration > Juwel HeliaLux** and enter its IP address (protocol `http` by default, or `https`).
+3. **Name the aquarium.** The name sets the device and the entity IDs: `Trigon 190` gives `light.trigon_190_light`. Moving over? Use the same name as before.
+4. **Options, if you like.** Under **three dots > Configure**: poll every 5 to 300 seconds (default 15), and the weather entity for clouds from weather.
+
+A new IP address is picked up by itself when Home Assistant sees the lamp's DHCP requests (same network), or after the next restart through a router integration such as UniFi. Otherwise use **three dots > Reconfigure**. One lamp per entry.
 
 <details>
 <summary>Install by hand</summary>
@@ -47,17 +54,6 @@ Search for **Juwel HeliaLux** under **Settings > Marketplace** (called HACS befo
 2. Copy `custom_components/helialux` into `/config/custom_components/` and restart Home Assistant.
 
 </details>
-
-<a id="set-up"></a>
-## Set up
-
-Before you start, reserve a fixed IP address for the lamp in your router and let it reach its time server (`ptbtime1.ptb.de`, UDP 123 outwards). Without the time, the profile runs at the wrong hour.
-
-1. **Add the lamp.** It usually shows up under **Settings > Devices & services > Discovered**, recognised by its MAC address. If not, choose **Add integration > Juwel HeliaLux** and enter its IP address (protocol `http` by default, or `https`).
-2. **Name the aquarium.** The name sets the device and the entity IDs: `Trigon 190` gives `light.trigon_190_light`. Moving over? Use the same name as before.
-3. **Options, if you like.** Under **three dots > Configure**: poll every 5 to 300 seconds (default 15), and the weather entity for clouds from weather.
-
-A new IP address is picked up by itself when Home Assistant sees the lamp's DHCP requests (same network), or after the next restart through a router integration such as UniFi. Otherwise use **three dots > Reconfigure**. One lamp per entry.
 
 <a id="entities"></a>
 ## Entities
@@ -239,3 +235,11 @@ Test requirements: `pip install -r requirements_test.txt`. The fake lamp answers
 [Apache License 2.0](LICENSE), Copyright 2026 SH1FT-W. Acknowledgements in [`NOTICE`](NOTICE).
 
 <sub>HeliaLux is an independent project, not affiliated with, endorsed or sponsored by Juwel Aquarium AG & Co. KG. Juwel and HeliaLux are trademarks of Juwel Aquarium AG & Co. KG.</sub>
+
+<br/>
+
+<div align="center">
+<a href="https://sh1ft-w.github.io"><img src="https://sh1ft-w.github.io/readme/footer.png" width="640" alt="All SH1FT-W projects"></a>
+<br/>
+<sub>More open source for Home Assistant and the Mac at <a href="https://sh1ft-w.github.io">sh1ft-w.github.io</a></sub>
+</div>
