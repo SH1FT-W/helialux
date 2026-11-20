@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 26.11.5 – 20.11.2026
 
 - Turning the light off with a transition no longer remembers the last dim step of the fade: turning it on
   again without values brings back the mix from before, not a barely lit one.
