@@ -385,8 +385,12 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
     def channels(self) -> int:
         return self.data.status.channels if self.data else 4
 
-    async def _write(self, levels: tuple[int, ...], *, force_start: bool = False) -> None:
-        levels = tuple(max(0, min(100, round(v))) for v in levels[: self.channels])
+    def _clamp(self, levels: tuple[int, ...]) -> tuple[int, ...]:
+        return tuple(max(0, min(100, round(v))) for v in levels[: self.channels])
+
+    async def _write(self, levels: tuple[int, ...], *, force_start: bool = False, step: bool = False) -> None:
+        """Set the channels. `step`: a transition step, so it does not become the mix for turn_on."""
+        levels = self._clamp(levels)
         status = self.data.status if self.data else None
         remaining = self._remaining()
         start = (
@@ -402,7 +406,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         self._last_command = dt_util.utcnow()
         self.desired.mode = MODE_MANUAL
         self.desired.levels = levels
-        if any(levels):
+        if any(levels) and not step:
             self.desired.last_on = levels
         if start or reply.color_remaining_min is not None:
             minutes = reply.color_remaining_min if reply.color_remaining_min is not None else duration
@@ -441,7 +445,10 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         largest = max(abs(t - c) for t, c in zip(levels, current, strict=False))
         steps = max(1, min(int(transition / FADE_MIN_GAP), largest))
         first = _mix(current, levels, 1 / steps)
-        await self._command(self._write(first))
+        # The mix for turn_on is the target, never a dim step on the way (fading out keeps the old mix).
+        if any(target := self._clamp(levels)):
+            self.desired.last_on = target
+        await self._command(self._write(first, step=True))
         if steps > 1:
             self._fade = self.config_entry.async_create_background_task(
                 self.hass, self._run_fade(current, levels, steps, transition / steps), f"{DOMAIN} Übergang"
@@ -455,13 +462,13 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             if step == last:
                 continue
             try:
-                await self._write(step)
+                await self._write(step, step=True)
                 last = step
             except HeliaLuxError as err:
                 _LOGGER.debug("Übergangsschritt %s/%s gescheitert: %s", i, steps, err)
         if last != target:
             try:
-                await self._write(target)
+                await self._write(target, step=True)
             except HeliaLuxError as err:
                 _LOGGER.warning("%s: Zielwert des Übergangs nicht gesetzt: %s", self.tank_name, err)
 

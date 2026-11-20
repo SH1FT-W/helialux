@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Turning the light off with a transition no longer remembers the last dim step of the fade: turning it on
+  again without values brings back the mix from before, not a barely lit one.
+
 ## 26.11.4 – 05.11.2026
 
 - README and project page: new layout, shorter and easier to scan, with one table at the core.

@@ -77,6 +77,16 @@ async def test_toggle_restores_last_mix(hass: HomeAssistant, setup, lamp: FakeLa
     assert lamp.levels == [100, 60, 55, 80]
 
 
+async def test_fade_out_keeps_last_mix(hass: HomeAssistant, setup, lamp: FakeLamp, freezer):
+    """Turning off with a transition must not store the dim fade steps as the mix for the next turn_on."""
+    await hass.services.async_call("light", "turn_off", {"entity_id": LIGHT, "transition": 60}, blocking=True)
+    for _ in range(35):
+        await tick(hass, freezer, 2)
+    assert lamp.levels == [0, 0, 0, 0]
+    await turn_on(hass)
+    assert lamp.levels == [100, 60, 55, 80]
+
+
 async def test_restore_after_lamp_reboot(hass: HomeAssistant, setup, lamp: FakeLamp, freezer):
     await turn_on(hass, rgbw_color=[77, 26, 20, 64])
     lamp.reboot()
