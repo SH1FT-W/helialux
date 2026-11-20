@@ -58,7 +58,7 @@ def test_parse_broken_profiles_and_device():
         parse_profiles("lang=0;")
     with pytest.raises(HeliaLuxError):
         parse_device("lang=0;")
-    with pytest.raises(HeliaLuxError, match="Wochenplan"):
+    with pytest.raises(HeliaLuxError, match="weekly schedule"):
         parse_profiles("profnames=['A','B'];profsel=[0,'x'];")
 
 
@@ -146,7 +146,7 @@ def test_levels_before_first_point_and_bad_name():
     assert profile.levels_at(450) == (30, 40) and profile.levels_at(1500) == (0, 0)
     # Name mit Trennzeichen des Speicherformats: nie roh in den Body
     for bad in ("a&b", "x=y", "P[1]", "zu lang 123456789"):
-        with pytest.raises(HeliaLuxError, match="Profilname"):
+        with pytest.raises(HeliaLuxError, match="Profile name"):
             profile_body(HeliaLuxProfile(0, bad, (0, 1439), ((0, 0),), (0, 0), (0, 0)))
     assert "PNAME=Standard%20o.%20Mi." in profile_body(HeliaLuxProfile(0, "Standard o. Mi.", (0,), ((0,),), (0,), (0,)))
 
@@ -165,11 +165,11 @@ async def test_profile_guards():
     profile = await client.profile(5)
     assert profile.index == 5
     lamp.profiles[5]["times"] = [0, 1439] + [1439] * 6  # in der App geändert
-    with pytest.raises(HeliaLuxError, match="geändert"):
+    with pytest.raises(HeliaLuxError, match="changed in the lamp"):
         await client.save_profile(profile)
     real = lamp.profeditvars
     lamp.profeditvars = lambda: real().replace("profNum=6", "profNum=0")  # Editor zeigt ein anderes Profil
-    with pytest.raises(HeliaLuxError, match="statt"):
+    with pytest.raises(HeliaLuxError, match="instead of"):
         await client.profile(6)
 
 

@@ -680,7 +680,7 @@ async def test_transition_steps_fail_quietly(hass: HomeAssistant, setup, lamp: F
             await tick(hass, freezer, 2)
         lamp.offline = False
     assert lamp.levels != [100, 0, 0, 100]
-    assert warning.call_count == 1 and "Zielwert des Übergangs" in warning.call_args.args[0]
+    assert warning.call_count == 1 and "target of the transition" in warning.call_args.args[0]
 
 
 async def test_color_simulation_switch_restarts_with_last_mix(hass: HomeAssistant, setup, lamp: FakeLamp):
@@ -734,14 +734,14 @@ async def test_weather_and_nightly_failures_only_warn(hass: HomeAssistant, setup
         hass.states.async_set("weather.wetterstation", "cloudy", {"wind_speed": 15, "wind_speed_unit": "km/h"})
         await hass.async_block_till_done()
         assert max(p["cI"]) == 0
-        assert any("Wolken nach Wetter nicht gesetzt" in c.args[0] for c in warning.call_args_list)
+        assert any("clouds from weather not set" in c.args[0] for c in warning.call_args_list)
         # Nachts mit Sonnenverlauf, Lampe nicht erreichbar
         await hass.services.async_call("switch", "turn_on", {"entity_id": "switch.trigon_190_sun_cycle"}, blocking=True)
         await hass.async_block_till_done()
         lamp.offline = True
         await tick(hass, freezer, 86400)
         lamp.offline = False
-        assert any("Profil nachts nicht neu gerechnet" in c.args[0] for c in warning.call_args_list)
+        assert any("profile not recalculated overnight" in c.args[0] for c in warning.call_args_list)
 
 
 async def test_maintain_scheduled_once(hass: HomeAssistant, setup):

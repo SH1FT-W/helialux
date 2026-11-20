@@ -216,7 +216,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         try:
             self.device = await self.client.device()
         except HeliaLuxError as err:
-            _LOGGER.debug("Gerätedaten nicht lesbar: %s", err)
+            _LOGGER.debug("Device data not readable: %s", err)
 
     def _save(self) -> None:
         self._store.async_delay_save(self._snapshot, 2)
@@ -249,14 +249,14 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             self.stats.failures_in_row += 1
             self.stats.last_error = str(err)
             if self.data is not None and self.stats.failures_in_row < FAILURES_BEFORE_UNAVAILABLE:
-                _LOGGER.debug("Abfrage %s gescheitert, behalte letzten Stand: %s", self.stats.failures_in_row, err)
+                _LOGGER.debug("Poll %s failed, keeping the last state: %s", self.stats.failures_in_row, err)
                 return self.data
             raise UpdateFailed(
                 translation_domain=DOMAIN, translation_key="unreachable", translation_placeholders={"error": str(err)}
             ) from err
 
         if self.stats.failures_in_row >= FAILURES_BEFORE_UNAVAILABLE:
-            self._note(f"wieder erreichbar nach {self.stats.failures_in_row} gescheiterten Abfragen")
+            self._note(f"reachable again after {self.stats.failures_in_row} failed polls")
         self.stats.failures_in_row = 0
         self.stats.last_success = dt_util.utcnow()
         if self.desired.last_on is None and any(status.levels):
@@ -267,7 +267,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
                 # Läuft die manuelle Farbe schon, gehört sie ab jetzt HA (Ablauf unbekannt → wird gleich verlängert).
                 self.desired.mode = MODE_MANUAL
                 self.desired.levels = status.levels
-                self._note(f"manuelle Farbe {list(status.levels)} der Lampe übernommen")
+                self._note(f"took over the manual color {list(status.levels)} running on the lamp")
             self._save()
         data = HeliaLuxData(status, profiles, self._clock_offset(status), self._remaining(), profile)
         self._check_clock_issue(data.clock_offset_min)
@@ -281,7 +281,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         try:
             return await self.client.profile(index)
         except HeliaLuxError as err:
-            _LOGGER.debug("Profil P%s nicht lesbar: %s", index + 1, err)
+            _LOGGER.debug("Profile P%s not readable: %s", index + 1, err)
             return None
 
     @staticmethod
@@ -321,14 +321,14 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             return
         # Schon hier belegen: zwei Abfragen kurz nacheinander starten sonst zwei Halte-Läufe, bevor einer läuft.
         self._maintaining = True
-        self.config_entry.async_create_background_task(self.hass, self._maintain(data), f"{DOMAIN} halten")
+        self.config_entry.async_create_background_task(self.hass, self._maintain(data), f"{DOMAIN} maintain")
 
     async def _maintain(self, data: HeliaLuxData) -> None:
         self._maintaining = True
         try:
             await self._maintain_inner(data)
         except HeliaLuxError as err:
-            _LOGGER.warning("%s: Zustand konnte nicht gehalten werden: %s", self.tank_name, err)
+            _LOGGER.warning("%s: could not keep the state: %s", self.tank_name, err)
         finally:
             self._maintaining = False
 
@@ -338,13 +338,13 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             return
         if status.daytime_simulation:
             # Tagsimulation wurde an der Lampe/App gestartet – das ist eine bewusste Entscheidung.
-            self._note("Tagsimulation an der Lampe gestartet, HA gibt die Kontrolle ab")
+            self._note("daytime simulation started on the lamp, HA hands over control")
             self.desired.mode = MODE_AUTO
             self._save()
             return
         if not status.color_simulation and not self.keep_manual:
             # „Manuelle Farbe halten“ ist aus: Laufzeit abgelaufen → das Profil der Lampe darf übernehmen.
-            self._note("manuelle Farbe beendet, Profil der Lampe läuft wieder")
+            self._note("manual color ended, the lamp's profile runs again")
             self.desired.mode = MODE_AUTO
             self.desired.expires = None
             self._save()
@@ -356,7 +356,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             self._last_restore = now
             self.stats.restores += 1
             self._note(
-                f"manuelle Farbe verloren (Neustart oder abgelaufen), stelle {list(want.levels)} wieder her",
+                f"manual color lost (restart or expired), restoring {list(want.levels)}",
                 logging.WARNING,  # eine Zeile im Log statt Info + Warnung mit demselben Inhalt
             )
             await self._write(want.levels, force_start=True)
@@ -364,7 +364,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         recent = self._last_command and dt_util.utcnow() - self._last_command < ADOPT_GRACE
         if want.levels is not None and status.levels != want.levels and not recent:
             # Jemand hat in der Juwel-App/Weboberfläche nachgeregelt – übernehmen statt dagegen zu kämpfen.
-            self._note(f"Werte an der Lampe geändert ({list(status.levels)}), übernommen")
+            self._note(f"values changed on the lamp ({list(status.levels)}), taken over")
             self.desired.levels = status.levels
             if any(status.levels):
                 self.desired.last_on = status.levels
@@ -451,7 +451,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         await self._command(self._write(first, step=True))
         if steps > 1:
             self._fade = self.config_entry.async_create_background_task(
-                self.hass, self._run_fade(current, levels, steps, transition / steps), f"{DOMAIN} Übergang"
+                self.hass, self._run_fade(current, levels, steps, transition / steps), f"{DOMAIN} transition"
             )
 
     async def _run_fade(self, start: tuple[int, ...], target: tuple[int, ...], steps: int, gap: float) -> None:
@@ -465,12 +465,12 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
                 await self._write(step, step=True)
                 last = step
             except HeliaLuxError as err:
-                _LOGGER.debug("Übergangsschritt %s/%s gescheitert: %s", i, steps, err)
+                _LOGGER.debug("Transition step %s/%s failed: %s", i, steps, err)
         if last != target:
             try:
                 await self._write(target, step=True)
             except HeliaLuxError as err:
-                _LOGGER.warning("%s: Zielwert des Übergangs nicht gesetzt: %s", self.tank_name, err)
+                _LOGGER.warning("%s: target of the transition not set: %s", self.tank_name, err)
 
     async def async_set_channel(self, index: int, value: int) -> None:
         """Einen Kanal (0 = Weiß, 1 = Blau, 2 = Grün, 3 = Rot) setzen, die anderen bleiben."""
@@ -564,7 +564,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             await self._command(self.client.save_profile(clouded, expected_times=current.times))
             self.async_set_updated_data(replace(self.data, profile=clouded))
         window = f"{_hhmm(prog.cloud_from)}–{_hhmm(prog.cloud_to)}"
-        self._note(f"Wolken in {current.name}: Stärke {i}, Zug {m if i else 0}, {window}")
+        self._note(f"clouds in {current.name}: intensity {i}, motion {m if i else 0}, {window}")
 
     # --- Sonnenverlauf und Eingewöhnung (rechnen täglich aus einer Vorlage) -----------------------
 
@@ -616,7 +616,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         if not (prog.sun_on or prog.acclim_on):
             if template is not None:
                 await self._command(self.client.save_profile(template, expected_times=current.times))
-                self._note(f"Profil {template.name} wieder im Original")
+                self._note(f"profile {template.name} back to the original")
                 prog.template = None
                 self._save()
                 self.async_set_updated_data(replace(self.data, profile=template))
@@ -635,7 +635,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         if prog.acclim_on:
             result = result.scaled(self.acclimatization_factor())
         await self._command(self.client.save_profile(result, expected_times=current.times))
-        self._note(f"Profil {result.name} neu gerechnet (Sonne: {prog.sun_on}, Eingewöhnung: {prog.acclim_on})")
+        self._note(f"profile {result.name} recalculated (sun cycle: {prog.sun_on}, acclimatization: {prog.acclim_on})")
         self.async_set_updated_data(replace(self.data, profile=result))
 
     # --- Wolken nach Wetter --------------------------------------------------------------------------
@@ -665,15 +665,15 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             return
         self._weather_written = now
         self.config_entry.async_create_background_task(
-            self.hass, self._weather_apply(*wanted), f"{DOMAIN} Wolken nach Wetter"
+            self.hass, self._weather_apply(*wanted), f"{DOMAIN} clouds from weather"
         )
 
     async def _weather_apply(self, intensity: int, motion: int) -> None:
         try:
             await self.async_set_clouds(intensity, motion)
-            self._note(f"Wolken nach Wetter: Stärke {intensity}, Zug {motion}")
+            self._note(f"clouds from weather: intensity {intensity}, motion {motion}")
         except HomeAssistantError as err:
-            _LOGGER.warning("%s: Wolken nach Wetter nicht gesetzt: %s", self.tank_name, err)
+            _LOGGER.warning("%s: clouds from weather not set: %s", self.tank_name, err)
 
     @callback
     def _nightly(self, _now: datetime) -> None:
@@ -682,16 +682,16 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
         finished = prog.acclim_on and self.acclimatization_factor() >= 1
         if finished:
             prog.acclim_on = False
-            self._note("Eingewöhnung abgeschlossen – volle Helligkeit")
+            self._note("acclimatization finished, full brightness")
             self._save()
         if prog.sun_on or prog.acclim_on or finished:
-            self.config_entry.async_create_background_task(self.hass, self._safe_program(), f"{DOMAIN} nachts")
+            self.config_entry.async_create_background_task(self.hass, self._safe_program(), f"{DOMAIN} nightly")
 
     async def _safe_program(self) -> None:
         try:
             await self._apply_program()
         except HomeAssistantError as err:
-            _LOGGER.warning("%s: Profil nachts nicht neu gerechnet: %s", self.tank_name, err)
+            _LOGGER.warning("%s: profile not recalculated overnight: %s", self.tank_name, err)
 
     def profile_index(self, profile: str | None) -> int:
         """Profil per Name („My_Profile“, „Standard (P8)“) oder Platz („P8“, „8“); leer = heute aktives."""
@@ -749,7 +749,7 @@ class HeliaLuxCoordinator(DataUpdateCoordinator[HeliaLuxData]):
             cm = tuple(cur_m if on and cur_i else 0 for on in lit)
         new = HeliaLuxProfile(index, name or current.name, tuple(times), channels, ci, cm)
         await self._command(self.client.save_profile(new, expected_times=current.times))
-        self._note(f"Profil P{index + 1} „{new.name}“ gespeichert ({len(times)} Stützpunkte)")
+        self._note(f'profile P{index + 1} "{new.name}" saved ({len(times)} points)')
         self._profiles_at = None
         await self.async_refresh()
         return new

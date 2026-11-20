@@ -4,6 +4,7 @@
 
 - Turning the light off with a transition no longer remembers the last dim step of the fade: turning it on
   again without values brings back the mix from before, not a barely lit one.
+- Error messages from the lamp, warnings in the log and the diagnostics log are in English now (were German).
 
 ## 26.11.4 – 05.11.2026
 

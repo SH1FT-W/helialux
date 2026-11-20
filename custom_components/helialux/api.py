@@ -227,18 +227,18 @@ def parse_status(text: str) -> HeliaLuxStatus:
             levels=levels[:channels],
         )
     except (KeyError, TypeError, ValueError) as err:
-        raise HeliaLuxError(f"statusvars.js unvollständig: {err}") from err
+        raise HeliaLuxError(f"statusvars.js incomplete: {err}") from err
 
 
 def parse_profiles(text: str) -> HeliaLuxProfiles:
     v = parse_vars(text)
     names = v.get("profnames")
     if not isinstance(names, list) or not names:
-        raise HeliaLuxError("wpvars.js ohne Profilnamen")
+        raise HeliaLuxError("wpvars.js without profile names")
     try:
         week = tuple(int(i) for i in v.get("profsel") or [])
     except (TypeError, ValueError) as err:
-        raise HeliaLuxError(f"wpvars.js: Wochenplan unlesbar: {err}") from err
+        raise HeliaLuxError(f"wpvars.js: weekly schedule unreadable: {err}") from err
     return HeliaLuxProfiles(names=tuple(str(n) for n in names), week=week)
 
 
@@ -249,14 +249,14 @@ def parse_profile(text: str) -> HeliaLuxProfile:
         channels = tuple(tuple(int(x) for x in v[f"CH{i}"]) for i in range(1, 5) if f"CH{i}" in v)
         n = len(times)
         if not channels or any(len(ch) != n for ch in channels):
-            raise HeliaLuxError("profeditvars.js: Kanäle passen nicht zu den Stützpunkten")
+            raise HeliaLuxError("profeditvars.js: channels do not match the points")
         ci = tuple(int(x) for x in v.get("cI") or [0] * n)
         cm = tuple(int(x) for x in v.get("cM") or [0] * n)
         if v.get("lamp") == "2Ch":
             channels = channels[:2]
         return HeliaLuxProfile(int(v["profNum"]), str(v.get("profile", "")), times, channels, ci, cm)
     except (KeyError, TypeError, ValueError) as err:
-        raise HeliaLuxError(f"profeditvars.js unvollständig: {err}") from err
+        raise HeliaLuxError(f"profeditvars.js incomplete: {err}") from err
 
 
 def profile_body(profile: HeliaLuxProfile) -> str:
@@ -267,7 +267,7 @@ def profile_body(profile: HeliaLuxProfile) -> str:
 
     if not PROFILE_NAME_RE.match(profile.name):
         # Der Name kommt roh in den Body; mit & = [ ] würde die Lampe die Felder falsch trennen.
-        raise HeliaLuxError(f"Profilname „{profile.name}“ enthält Zeichen, die die Lampe nicht speichern kann")
+        raise HeliaLuxError(f'Profile name "{profile.name}" contains characters the lamp cannot store')
     channels = list(profile.channels) + [tuple(0 for _ in profile.times)] * (4 - len(profile.channels))
     text = (
         f"action=30&PNAME={profile.name}&TIMES={arr(profile.times)}"
@@ -281,7 +281,7 @@ def parse_device(text: str) -> HeliaLuxDevice:
     v = parse_vars(text)
     info = [str(i) for i in v.get("info") or []]
     if not info:
-        raise HeliaLuxError("devvars.js ohne info")
+        raise HeliaLuxError("devvars.js without info")
 
     def at(i: int) -> str | None:
         return info[i] if len(info) > i and info[i] else None
@@ -415,7 +415,7 @@ class HeliaLuxClient:
             await self._request("POST", "profedit.html", {"profNum": index})
             profile = parse_profile(await self._request("GET", "profeditvars.js"))
         if profile.index != index:
-            raise HeliaLuxError(f"profeditvars.js zeigt P{profile.index + 1} statt P{index + 1}")
+            raise HeliaLuxError(f"profeditvars.js shows P{profile.index + 1} instead of P{index + 1}")
         return profile
 
     async def save_profile(self, profile: HeliaLuxProfile, expected_times: tuple[int, ...] | None = None) -> None:
@@ -429,5 +429,5 @@ class HeliaLuxClient:
             await self._request("POST", "profedit.html", {"profNum": profile.index})
             check = parse_profile(await self._request("GET", "profeditvars.js"))
             if check.index != profile.index or check.times != expected:
-                raise HeliaLuxError("Profil hat sich in der Lampe geändert – nicht gespeichert")
+                raise HeliaLuxError("Profile was changed in the lamp meanwhile, not saved")
             await self._request("POST", "pedit", profile_body(profile))
